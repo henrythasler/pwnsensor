@@ -17,6 +17,8 @@ signals:
 
 public slots:
 
+private:
+    bool Init();
 };
 
 #endif // QLMSENSORS_H
