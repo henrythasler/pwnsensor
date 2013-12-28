@@ -3,6 +3,10 @@
 
 #include <QObject>
 
+// LM-Sensors Library Header
+#include <sensors/sensors.h>/* Library initialization and clean-up */
+#include <sensors/error.h>/* Library initialization and clean-up */
+
 class QLmSensors : public QObject
 {
     Q_OBJECT

@@ -19,3 +19,5 @@ qtcAddDeployment()
 
 HEADERS += \
     qlmsensors.h
+
+LIBS += -lsensors
