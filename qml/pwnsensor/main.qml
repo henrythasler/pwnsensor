@@ -1,16 +1,16 @@
 import QtQuick 2.0
 
 Rectangle {
-    width: 360
-    height: 360
-    Text {
-        text: qsTr("Hello World")
-        anchors.centerIn: parent
-    }
-    MouseArea {
+    width: 640
+    height: 480
+    color: "black"
+
+    Item{
         anchors.fill: parent
-        onClicked: {
+        focus: true
+        Keys.onEscapePressed: {
             Qt.quit();
         }
+
     }
 }
