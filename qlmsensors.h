@@ -40,7 +40,7 @@ class QSensorItem : public QObject
 {
     Q_OBJECT
 public:
-    explicit QSensorItem(QObject *parent = 0);
+    explicit QSensorItem(QObject *parent = 0):QObject(parent){};
 
 signals:
 

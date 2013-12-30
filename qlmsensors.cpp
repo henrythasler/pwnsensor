@@ -37,8 +37,8 @@ else
         while ((feature = sensors_get_features(chip, &a)))
             {
 //                qDebug() << "  " << sensors_get_label(chip, feature);
-            QSensorItem *new_item = new QSensorItem();
-
+            QSensorItem *new_item = new QSensorItem;
+/*
             sub = sensors_get_subfeature(chip, feature, (sensors_subfeature_type)(((int)feature->type) << 8));
 
             new_item->index = sensorItems.count();
@@ -61,6 +61,7 @@ else
                         new_item->ymax=100;
                         break;
                 }
+*/
             m_sensorItems.append(new_item);
             }
         }
