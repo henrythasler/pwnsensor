@@ -3,6 +3,7 @@
 QLmSensors::QLmSensors(QObject *parent) :
     QObject(parent)
 {
+    m_initialized = Init();
 }
 
 bool QLmSensors::Init()
@@ -38,10 +39,10 @@ else
             {
 //                qDebug() << "  " << sensors_get_label(chip, feature);
             QSensorItem *new_item = new QSensorItem;
-/*
+
             sub = sensors_get_subfeature(chip, feature, (sensors_subfeature_type)(((int)feature->type) << 8));
 
-            new_item->index = sensorItems.count();
+            new_item->index = m_sensorItems.count();
             new_item->label = sensors_get_label(chip, feature);
             if(adap) new_item->adapter = adap;
             new_item->chip = chip;
@@ -61,7 +62,7 @@ else
                         new_item->ymax=100;
                         break;
                 }
-*/
+
             m_sensorItems.append(new_item);
             }
         }
@@ -71,3 +72,56 @@ return true;
 }
 
 
+bool QLmSensors::do_sampleValues()
+{
+double val;
+    foreach (QSensorItem* item, m_sensorItems)
+        {
+        item->do_sample();
+/*
+        sensors_get_value(item->chip, item->sub->number,&val);
+//        item->samples.insert(QDateTime().currentDateTime().toMSecsSinceEpoch(), (val>32000)?0:val);
+        item->m_samples.append(QSensorSample(0, QDateTime().currentDateTime().toMSecsSinceEpoch(), (val>32000)?0:(float)val));
+        if(item->samples.size() > item->max_samples)
+            {
+            int i=0;
+
+            for (int j = 0; j < item->samples.size(); ++j)
+                {
+                if(i < (item->samples.size() - item->max_samples)) item->samples.removeFirst();
+                else break;
+                i++;
+
+                }
+/*
+            foreach (qint64 key, item->samples.keys())
+                {
+                if(i < (item->samples.size() - item->max_samples)) item->samples.remove(key);
+                else break;
+                i++;
+                }
+
+            }
+*/
+        }
+    return true;
+}
+
+
+bool QSensorItem::do_sample()
+{
+double val;
+    sensors_get_value(chip, sub->number,&val);
+    m_samples.append(new QSensorSample(QDateTime().currentDateTime().toMSecsSinceEpoch(), (val>32000)?0:(float)val));
+    if(m_samples.size() > max_samples)
+        {
+        int i=0;
+
+        for (int j = 0; j < m_samples.size(); ++j)
+            {
+            if(i < (m_samples.size() - max_samples)) m_samples.removeFirst();
+            else break;
+            i++;
+            }
+        }
+}
