@@ -6,6 +6,34 @@ QLmSensors::QLmSensors(QObject *parent) :
     m_initialized = Init();
 }
 
+
+void appendItems(QQmlListProperty<QSensorItem> *property, QSensorItem *item)
+{
+Q_UNUSED(property);
+Q_UNUSED(item);
+//Do nothing. can't add to a directory using this method
+}
+
+int itemSize(QQmlListProperty<QSensorItem> *property)
+{
+return static_cast< QList<QSensorItem *> *>(property->data)->size();
+}
+
+QSensorItem *itemAt(QQmlListProperty<QSensorItem> *property, int index)
+{
+return static_cast< QList<QSensorItem *> *>(property->data)->at(index);
+}
+
+void clearitemPtr(QQmlListProperty<QSensorItem> *property)
+{
+return static_cast< QList<QSensorItem *> *>(property->data)->clear();
+}
+
+QQmlListProperty<QSensorItem> QLmSensors::getItems()
+{
+    return QQmlListProperty<QSensorItem>(this, &m_sensorItems, &appendItems, &itemSize, &itemAt, &clearitemPtr);
+}
+
 bool QLmSensors::Init()
 {
 #define BUF_SIZE 200
@@ -124,4 +152,13 @@ double val;
             i++;
             }
         }
+    return true;
+}
+
+
+float QSensorItem::getvalue()
+{
+double val;
+    sensors_get_value(chip, sub->number,&val);
+    return (float) val;
 }

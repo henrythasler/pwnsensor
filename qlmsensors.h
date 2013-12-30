@@ -39,6 +39,9 @@ private:
 class QSensorItem : public QObject
 {
     Q_OBJECT
+    Q_PROPERTY(QString label READ getlabel)
+    Q_PROPERTY(float value READ getvalue)
+
 public:
     explicit QSensorItem(QObject *parent = 0):QObject(parent)
         {
@@ -57,6 +60,9 @@ public:
         scale = 1.;
         max_samples = 32;
         };
+
+    QString getlabel(){return label;};
+    float getvalue();
 
     bool do_sample();
 
@@ -90,6 +96,8 @@ class QLmSensors : public QObject
     Q_PROPERTY(qint64 timestamp READ timestamp)
     Q_PROPERTY(bool initialized READ initialized)
     Q_PROPERTY(QString errorMessage READ errorMessage)
+    Q_PROPERTY(QQmlListProperty<QSensorItem> items READ getItems NOTIFY updateItems)
+
 public:
     explicit QLmSensors(QObject *parent = 0);
 
@@ -99,7 +107,10 @@ public:
     bool initialized(){return m_initialized;};
     QString errorMessage(){return m_errorMessage;};
 
+    QQmlListProperty<QSensorItem> getItems();
+
 signals:
+    void updateItems();
 
 public slots:
 

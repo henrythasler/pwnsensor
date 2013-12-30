@@ -21,3 +21,8 @@ HEADERS += \
     qlmsensors.h
 
 LIBS += -lsensors
+
+OTHER_FILES += \
+    qml/pwnsensor/Chart.qml \
+    qml/pwnsensor/SignalList.qml \
+    qml/pwnsensor/Scrollbar.qml
