@@ -72,6 +72,7 @@ public slots:
 private:
     bool Init();
 
+
     QList<QSensorItem*> m_sensorItems;
 
     QString m_errorMessage;
