@@ -3,6 +3,7 @@
 QLmSensors::QLmSensors(QObject *parent) :
     QObject(parent)
 {
+    palette << "red" << "greenyellow" << "limegreen" << "dodgerblue" << "cyan" << "magenta" << "pink" << "yellow" << "orange" << "white";
     m_initialized = Init();
 }
 
@@ -77,6 +78,7 @@ else
             new_item->feature = feature;
             new_item->sub = sub;
             new_item->max_samples = 1800;
+            new_item->color = palette.at(m_sensorItems.count()%palette.count());
             new_item->tmin = 3 * 60 * 1000;    // now is 0
 
             switch(new_item->feature->type)

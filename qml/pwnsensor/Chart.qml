@@ -43,11 +43,11 @@ Rectangle{
          {
              ctx.save();
              //ctx.globalAlpha = 0.7;
-             ctx.strokeStyle = color;
+             ctx.strokeStyle = sensors.items[current_item].color;
              ctx.lineWidth = 2;
              ctx.lineCap = "round";
              ctx.lineJoin = "bevel";
-             ctx.shadowColor = color;
+             ctx.shadowColor = sensors.items[current_item].color;
              ctx.shadowBlur = 3;
              ctx.beginPath();
 

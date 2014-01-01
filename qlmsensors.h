@@ -45,6 +45,7 @@ class QSensorItem : public QObject
     Q_PROPERTY(qint64 tmax READ gettmax)
     Q_PROPERTY(float ymin READ getymin)
     Q_PROPERTY(float ymax READ getymax)
+    Q_PROPERTY(QString color READ getcolor)
     Q_PROPERTY(QQmlListProperty<QSensorSample> samples READ getSamples NOTIFY updateSamples)
 
 public:
@@ -72,6 +73,7 @@ public:
     qint64 gettmax(){return tmax;};
     float getymin(){return ymin;};
     float getymax(){return ymax;};
+    QString getcolor(){return color;};
     QQmlListProperty<QSensorSample> getSamples();
 
 
@@ -131,6 +133,7 @@ private:
 
 
     QList<QSensorItem*> m_sensorItems;
+    QStringList palette;
 
     QString m_errorMessage;
     bool m_initialized;

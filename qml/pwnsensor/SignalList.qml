@@ -45,7 +45,7 @@ Rectangle {
                     }
 //                        text: name
                 }
-                Rectangle{width: 10; height: 10;  anchors.verticalCenter: parent.verticalCenter; color: "blue";}
+                Rectangle{width: 10; height: 10;  anchors.verticalCenter: parent.verticalCenter; color: itemcolor;}
                 Text { width:100; text: '<b>'+name+'</b>'; clip:true}
                 Text { width:40; text: '<i>'+value+'</i>'; clip:true}
             }

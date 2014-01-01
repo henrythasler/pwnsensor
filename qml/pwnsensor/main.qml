@@ -15,13 +15,13 @@ Rectangle {
             name: "LEFT_DRAWER_OPEN"
             PropertyChanges { target: signals; x:0}
             PropertyChanges { target: left_drawer; x:signals.width-left_drawer.width/2}
-            PropertyChanges { target: chart; x:signals.width; width:root.width-signals.width}
+//            PropertyChanges { target: chart; x:signals.width; width:root.width-signals.width}
               },
         State {
             name: "LEFT_DRAWER_CLOSED"
             PropertyChanges { target: signals; x:-signals.width}
             PropertyChanges { target: left_drawer; x:-left_drawer.width/2}
-            PropertyChanges { target: chart; x:0; width:root.width}
+//            PropertyChanges { target: chart; x:0; width:root.width}
               }
            ]
 
@@ -30,7 +30,7 @@ Rectangle {
             to: "*"
             NumberAnimation { target: left_drawer; properties: "x"; duration: 500; easing.type:Easing.OutExpo }
             NumberAnimation { target: signals; properties: "x"; duration: 500; easing.type: Easing.OutExpo }
-            NumberAnimation { target: chart; properties: "x, width"; duration: 500; easing.type: Easing.OutExpo }
+//            NumberAnimation { target: chart; properties: "x, width"; duration: 500; easing.type: Easing.OutExpo }
         }
     ]
 
@@ -49,7 +49,10 @@ Rectangle {
         function init(){
 
             for(var x=0;x<sensors.items.length;x++)
-                signals.model.append({"name": sensors.items[x].label, "value":sensors.items[x].value});
+                signals.model.append({"name": sensors.items[x].label,
+                                      "value": sensors.items[x].value,
+                                      "itemcolor": sensors.items[x].color}
+                                     );
 
             // nothing right now
         }
@@ -112,6 +115,6 @@ Rectangle {
         sensors: sensors
         height: root.height
         width: 190
-        color:"white"
+        color:"#66ffffff"
         }
 }
