@@ -63,7 +63,9 @@ Rectangle {
            {
            sensors.do_sampleValues();
             for(var x=0;x<sensors.items.length;x++)
-                signals.model.setProperty(x,"value", sensors.items[x].value);
+//                signals.model.setProperty(x,"value", sensors.items[x].value);
+                signals.model.setProperty(x,"value", sensors.items[x].samples[sensors.items[x].samples.length-1].value);
+//           console.debug(sensors);
            chart.chart_canvas.requestPaint();
            }
        }
@@ -76,6 +78,7 @@ Rectangle {
         width: root.width
         height: root.height
         sensors: sensors
+        current_item: signals.selected_item
         }
 
 

@@ -39,7 +39,7 @@ Rectangle{
          }
 
 
-         function drawGraph(ctx, color, points)
+         function drawGraph(ctx)
          {
              ctx.save();
              //ctx.globalAlpha = 0.7;
@@ -51,20 +51,27 @@ Rectangle{
              ctx.shadowBlur = 3;
              ctx.beginPath();
 
-             var end = points.length;
-             for (var i = 0; i < end; i++)
+             var current_timestamp = sensors.timestamp;
+             var tmin = sensors.items[current_item].tmin
+             var scale_y = canvas.height / (sensors.items[current_item].ymax - sensors.items[current_item].ymin);
+             var scale_x = -canvas.width / tmin;
+
+             for (var i = 0, count=0; i < sensors.items[current_item].samples.length; i++)
                  {
-                 if (i == 0)
-                     {
-//                     ctx.arc(points[i].x, canvas.height-points[i].y, 9,0,2*Math.PI);
-                     ctx.moveTo(points[i].x, canvas.height-points[i].y);
-                     }
-                 else
-                     {
-//                     ctx.arc(points[i].x, canvas.height-points[i].y, 9,0,2*Math.PI);
-//                     ctx.stroke();
-                     ctx.lineTo(points[i].x, canvas.height-points[i].y);
-                     }
+                 if(sensors.items[current_item].samples[i].time >= (current_timestamp-tmin))
+                    {
+                     if (count == 0)
+                         {
+                         ctx.moveTo( (current_timestamp - sensors.items[current_item].samples[i].time - tmin) * scale_x,
+                                    canvas.height-(sensors.items[current_item].samples[i].value - sensors.items[current_item].ymin) * scale_y       );
+                         }
+                     else
+                         {
+                         ctx.lineTo( (current_timestamp - sensors.items[current_item].samples[i].time - tmin) * scale_x,
+                                    canvas.height-(sensors.items[current_item].samples[i].value - sensors.items[current_item].ymin) * scale_y       );
+                         }
+                    count++;
+                    }
                  }
              ctx.stroke();
              ctx.restore();
@@ -74,6 +81,8 @@ Rectangle{
              var ctx = canvas.getContext("2d");
              ctx.globalCompositeOperation = "source-over";
              drawBackground(ctx);
+             drawGraph(ctx);
+//             console.log(current_item);
          }
      }
 }

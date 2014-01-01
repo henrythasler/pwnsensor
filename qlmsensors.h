@@ -41,6 +41,11 @@ class QSensorItem : public QObject
     Q_OBJECT
     Q_PROPERTY(QString label READ getlabel)
     Q_PROPERTY(float value READ getvalue)
+    Q_PROPERTY(qint64 tmin READ gettmin)
+    Q_PROPERTY(qint64 tmax READ gettmax)
+    Q_PROPERTY(float ymin READ getymin)
+    Q_PROPERTY(float ymax READ getymax)
+    Q_PROPERTY(QQmlListProperty<QSensorSample> samples READ getSamples NOTIFY updateSamples)
 
 public:
     explicit QSensorItem(QObject *parent = 0):QObject(parent)
@@ -63,6 +68,12 @@ public:
 
     QString getlabel(){return label;};
     float getvalue();
+    qint64 gettmin(){return tmin;};
+    qint64 gettmax(){return tmax;};
+    float getymin(){return ymin;};
+    float getymax(){return ymax;};
+    QQmlListProperty<QSensorSample> getSamples();
+
 
     bool do_sample();
 
@@ -81,6 +92,7 @@ public:
     qint32 max_samples;
 
 signals:
+    void updateSamples();
 
 public slots:
 

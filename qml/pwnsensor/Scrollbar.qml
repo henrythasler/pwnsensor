@@ -1,5 +1,11 @@
 import QtQuick 2.0
 
+/*
+based on the blog entry
+http://qtsource.wordpress.com/2011/02/07/scrollable-and-scroll-indicators-with-qml/
+by Lauri Jääskelä
+*/
+
 Rectangle {
     property variant flickable
     property bool vertical: true

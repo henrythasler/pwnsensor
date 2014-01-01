@@ -76,8 +76,8 @@ else
             new_item->chip = chip;
             new_item->feature = feature;
             new_item->sub = sub;
-            new_item->max_samples = 1201;
-            new_item->tmin = 6 * 60 * 1000;    // now is 0
+            new_item->max_samples = 1800;
+            new_item->tmin = 3 * 60 * 1000;    // now is 0
 
             switch(new_item->feature->type)
                 {
@@ -147,7 +147,7 @@ double val;
 
         for (int j = 0; j < m_samples.size(); ++j)
             {
-            if(i < (m_samples.size() - max_samples)) m_samples.removeFirst();
+            if(i < (m_samples.size() - max_samples))  delete m_samples.takeFirst();
             else break;
             i++;
             }
@@ -161,4 +161,31 @@ float QSensorItem::getvalue()
 double val;
     sensors_get_value(chip, sub->number,&val);
     return (float) val;
+}
+
+
+void appendSample(QQmlListProperty<QSensorSample> *property, QSensorSample *item)
+{
+Q_UNUSED(property);
+Q_UNUSED(item);
+}
+
+int sampleSize(QQmlListProperty<QSensorSample> *property)
+{
+return static_cast< QList<QSensorSample *> *>(property->data)->size();
+}
+
+QSensorSample *sampleAt(QQmlListProperty<QSensorSample> *property, int index)
+{
+return static_cast< QList<QSensorSample *> *>(property->data)->at(index);
+}
+
+void clearSamplePtr(QQmlListProperty<QSensorSample> *property)
+{
+return static_cast< QList<QSensorSample *> *>(property->data)->clear();
+}
+
+QQmlListProperty<QSensorSample> QSensorItem::getSamples()
+{
+    return QQmlListProperty<QSensorSample>(this, &m_samples, &appendSample, &sampleSize, &sampleAt, &clearSamplePtr);
 }

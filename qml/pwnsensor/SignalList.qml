@@ -4,6 +4,7 @@ import QtQuick.Controls 1.1
 Rectangle {
     property var sensors: null
     property var model: model
+    property var selected_item: list.currentIndex
     width: 120;
     height: parent.height
     color: "yellow"
