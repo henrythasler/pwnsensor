@@ -3,7 +3,9 @@
 QLmSensors::QLmSensors(QObject *parent) :
     QObject(parent)
 {
+//    http://www.w3.org/TR/SVG/types.html#ColorKeywords
     palette << "red" << "greenyellow" << "limegreen" << "dodgerblue" << "cyan" << "magenta" << "pink" << "yellow" << "orange" << "white";
+
     m_initialized = Init();
 }
 
@@ -77,7 +79,7 @@ else
             new_item->chip = chip;
             new_item->feature = feature;
             new_item->sub = sub;
-            new_item->max_samples = 1800;
+            new_item->max_samples = 10000;
             new_item->color = palette.at(m_sensorItems.count()%palette.count());
             new_item->tmin = 3 * 60 * 1000;    // now is 0
 
@@ -86,6 +88,7 @@ else
                 case SENSORS_FEATURE_FAN:
                         new_item->ymin=300;
                         new_item->ymax=1200;
+                        new_item->checked=true;
                         break;
                 default:
                         new_item->ymin=0;

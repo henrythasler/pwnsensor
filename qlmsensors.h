@@ -45,7 +45,8 @@ class QSensorItem : public QObject
     Q_PROPERTY(qint64 tmax READ gettmax)
     Q_PROPERTY(float ymin READ getymin)
     Q_PROPERTY(float ymax READ getymax)
-    Q_PROPERTY(QString color READ getcolor)
+    Q_PROPERTY(QString color READ getcolor WRITE setcolor NOTIFY colorChanged)
+    Q_PROPERTY(bool checked READ getchecked WRITE setchecked NOTIFY checkChanged)
     Q_PROPERTY(QQmlListProperty<QSensorSample> samples READ getSamples NOTIFY updateSamples)
 
 public:
@@ -65,6 +66,7 @@ public:
         offset = 0.;
         scale = 1.;
         max_samples = 32;
+        checked = false;
         };
 
     QString getlabel(){return label;};
@@ -74,6 +76,10 @@ public:
     float getymin(){return ymin;};
     float getymax(){return ymax;};
     QString getcolor(){return color;};
+    void setcolor(const QString &newcol){color=newcol;};
+    bool getchecked(){return checked;};
+    void setchecked(const bool &newcheck){checked=newcheck;};
+
     QQmlListProperty<QSensorSample> getSamples();
 
 
@@ -92,9 +98,12 @@ public:
     float linewidth;
     float offset, scale;
     qint32 max_samples;
+    bool checked;
 
 signals:
     void updateSamples();
+    void checkChanged();
+    void colorChanged();
 
 public slots:
 
@@ -130,7 +139,6 @@ public slots:
 
 private:
     bool Init();
-
 
     QList<QSensorItem*> m_sensorItems;
     QStringList palette;

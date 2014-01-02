@@ -61,15 +61,31 @@ Rectangle {
 
     Timer {
         id:maintimer
-        interval: 100; running: true; repeat: true
+        interval: 200; running: true; repeat: true
+        property var counter:0;
+
         onTriggered:
            {
-           sensors.do_sampleValues();
-            for(var x=0;x<sensors.items.length;x++)
-//                signals.model.setProperty(x,"value", sensors.items[x].value);
-                signals.model.setProperty(x,"value", sensors.items[x].samples[sensors.items[x].samples.length-1].value);
-//           console.debug(sensors);
-           chart.chart_canvas.requestPaint();
+           counter++;
+//           if(!(counter%10))
+            sensors.do_sampleValues();
+
+           for(var x=0;x<sensors.items.length;x++)
+                {
+                if(sensors.items[x].samples.length)
+                    {
+                        // this causes a memory leak!!
+//                    signals.model.setProperty(x,"value", sensors.items[x].samples[sensors.items[x].samples.length-1].value);
+
+                      // this is better
+                    signals.model.setProperty(x,"value", sensors.items[x].value);
+                    }
+                }
+
+//           if(!(counter%10))
+             chart.chart_canvas.requestPaint();
+
+           if(!(counter%100)) console.log(sensors.items[0].samples.length);
            }
        }
 
@@ -114,6 +130,7 @@ Rectangle {
         id:signals
         sensors: sensors
         height: root.height
+        chart: chart
         width: 190
         color:"#66ffffff"
         }
