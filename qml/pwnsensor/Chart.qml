@@ -17,7 +17,7 @@ Rectangle{
          width: parent.width
          height: parent.height
 //         renderTarget: Canvas.FramebufferObject
-         renderTarget: Canvas.Image
+//         renderTarget: Canvas.Image
 //         renderStrategy: Canvas.Threaded
 //         antialiasing: false
 
@@ -52,7 +52,7 @@ Rectangle{
              ctx.lineCap = "round";
              ctx.lineJoin = "bevel";
              ctx.shadowColor = sensors.items[item].color;
-//             ctx.shadowBlur = 3;
+             ctx.shadowBlur = 3;
              ctx.beginPath();
 
              var current_timestamp = sensors.timestamp;
