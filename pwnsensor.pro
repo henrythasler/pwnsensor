@@ -8,6 +8,7 @@ QML_IMPORT_PATH =
 
 # The .cpp file which was generated for your project. Feel free to hack it.
 SOURCES += main.cpp \
+    signalcanvas.cpp \
     qlmsensors.cpp
 
 # Installation path
@@ -18,11 +19,11 @@ include(qtquick2applicationviewer/qtquick2applicationviewer.pri)
 qtcAddDeployment()
 
 HEADERS += \
+    signalcanvas.h \
     qlmsensors.h
 
 LIBS += -lsensors
 
 OTHER_FILES += \
-    qml/pwnsensor/Chart.qml \
     qml/pwnsensor/SignalList.qml \
     qml/pwnsensor/Scrollbar.qml

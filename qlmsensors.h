@@ -130,6 +130,8 @@ public:
     bool initialized(){return m_initialized;};
     QString errorMessage(){return m_errorMessage;};
 
+    QList<QSensorItem*> items(){return m_sensorItems;};
+
     QQmlListProperty<QSensorItem> getItems();
 
 signals:

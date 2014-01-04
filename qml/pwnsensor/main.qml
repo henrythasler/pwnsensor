@@ -1,12 +1,11 @@
 import QtQuick 2.0
 import sensors 1.0
 
-
 Rectangle {
     id: root
     width: 640
     height: 480
-    color: "black"
+    color: "#252b31"
     border.width: 0
 
     state:"LEFT_DRAWER_OPEN"
@@ -43,6 +42,24 @@ Rectangle {
 
     }
 
+
+    SignalCanvas{
+        id: chart
+        anchors.fill: parent
+
+
+        function init(){
+
+            for(var x=0;x<chart.sensors.items.length;x++)
+                signals.model.append({"name": chart.sensors.items[x].label,
+                                      "value": chart.sensors.items[x].value,
+                                      "itemcolor": chart.sensors.items[x].color}
+                                     );
+        }
+        Component.onCompleted: init();
+    }
+
+/*
     QLmSensors {
         id: sensors
 
@@ -58,7 +75,7 @@ Rectangle {
         }
         Component.onCompleted: init();
     }
-
+*/
     Timer {
         id:maintimer
         interval: 200; running: true; repeat: true
@@ -67,31 +84,17 @@ Rectangle {
         onTriggered:
            {
            counter++;
-//           if(!(counter%10))
-            sensors.do_sampleValues();
-
-           for(var x=0;x<sensors.items.length;x++)
+//           console.log(chart.sensors.items.length);
+           for(var x=0;x<chart.sensors.items.length;x++)
                 {
-                if(sensors.items[x].samples.length)
-                    {
-                        // this causes a memory leak!!
-//                    signals.model.setProperty(x,"value", sensors.items[x].samples[sensors.items[x].samples.length-1].value);
-
-                      // this is better
-                    signals.model.setProperty(x,"value", sensors.items[x].value);
-                    }
+                signals.model.setProperty(x,"value", chart.sensors.items[x].value);
                 }
-
-//           if(!(counter%10))
-             chart.chart_canvas.requestPaint();
-
-           if(!(counter%100)) console.log(sensors.items[0].samples.length);
            }
        }
 
 
 
-
+/*
     Chart {
         id: chart
         width: root.width
@@ -99,7 +102,7 @@ Rectangle {
         sensors: sensors
         current_item: signals.selected_item
         }
-
+*/
 
     Rectangle{
         id: left_drawer
@@ -128,7 +131,7 @@ Rectangle {
 
     SignalList{
         id:signals
-        sensors: sensors
+        sensors: chart.sensors
         height: root.height
         chart: chart
         width: 190
