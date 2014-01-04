@@ -7,6 +7,7 @@ Rectangle {
     height: 480
     color: "#252b31"
     border.width: 0
+    property var timerinterval: 500
 
     state:"LEFT_DRAWER_OPEN"
     states:[
@@ -42,6 +43,22 @@ Rectangle {
 
     }
 
+    Timer {
+        id:maintimer
+        interval: root.timerinterval;
+        running: true;
+        repeat: true
+        property var counter:0;
+
+        onTriggered:
+           {
+           counter++;
+           for(var x=0;x<chart.sensors.items.length;x++)
+                {
+                signals.model.setProperty(x,"value", chart.sensors.items[x].value);
+                }
+           }
+       }
 
     SignalCanvas{
         id: chart
@@ -55,54 +72,11 @@ Rectangle {
                                       "value": chart.sensors.items[x].value,
                                       "itemcolor": chart.sensors.items[x].color}
                                      );
+            interval = root.timerinterval;
         }
         Component.onCompleted: init();
     }
 
-/*
-    QLmSensors {
-        id: sensors
-
-        function init(){
-
-            for(var x=0;x<sensors.items.length;x++)
-                signals.model.append({"name": sensors.items[x].label,
-                                      "value": sensors.items[x].value,
-                                      "itemcolor": sensors.items[x].color}
-                                     );
-
-            // nothing right now
-        }
-        Component.onCompleted: init();
-    }
-*/
-    Timer {
-        id:maintimer
-        interval: 200; running: true; repeat: true
-        property var counter:0;
-
-        onTriggered:
-           {
-           counter++;
-//           console.log(chart.sensors.items.length);
-           for(var x=0;x<chart.sensors.items.length;x++)
-                {
-                signals.model.setProperty(x,"value", chart.sensors.items[x].value);
-                }
-           }
-       }
-
-
-
-/*
-    Chart {
-        id: chart
-        width: root.width
-        height: root.height
-        sensors: sensors
-        current_item: signals.selected_item
-        }
-*/
 
     Rectangle{
         id: left_drawer

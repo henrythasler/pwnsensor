@@ -15,7 +15,7 @@ public:
     void paint(QPainter *painter);
 
     int interval(){return timer->interval();};
-    void setinterval(int val){timer->setInterval(val);};
+    void setinterval(int val);
 
     QLmSensors* getSensors(){return LmSensors;};
 
