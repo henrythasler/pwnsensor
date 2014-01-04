@@ -81,6 +81,7 @@ public:
     void setchecked(const bool &newcheck){checked=newcheck;};
 
     QQmlListProperty<QSensorSample> getSamples();
+    QList<QSensorSample*> samples(){return m_samples;};
 
 
     bool do_sample();
@@ -134,6 +135,9 @@ public:
 
     QQmlListProperty<QSensorItem> getItems();
 
+    QStringList palette;
+
+
 signals:
     void updateItems();
 
@@ -143,7 +147,6 @@ private:
     bool Init();
 
     QList<QSensorItem*> m_sensorItems;
-    QStringList palette;
 
     QString m_errorMessage;
     bool m_initialized;

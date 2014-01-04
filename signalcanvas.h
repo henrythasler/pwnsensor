@@ -22,10 +22,16 @@ public:
 signals:
 
 public slots:
+    void timerevt();
+
+public slots:
+
+
 
 private:
+    int counter;
     QLmSensors *LmSensors;
     QTimer *timer;
-
+    QStringList palette;
 };
 #endif // SIGNALCANVAS_H
