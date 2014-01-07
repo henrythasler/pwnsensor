@@ -41,6 +41,8 @@ class QSensorItem : public QObject
     Q_OBJECT
     Q_PROPERTY(QString label READ getlabel)
     Q_PROPERTY(float value READ getvalue)
+//    Q_PROPERTY(float minval READ getminvalue)
+//    Q_PROPERTY(float maxval READ getmaxvalue)
     Q_PROPERTY(qint64 tmin READ gettmin)
     Q_PROPERTY(qint64 tmax READ gettmax)
     Q_PROPERTY(float ymin READ getymin)
@@ -50,24 +52,7 @@ class QSensorItem : public QObject
     Q_PROPERTY(QQmlListProperty<QSensorSample> samples READ getSamples NOTIFY updateSamples)
 
 public:
-    explicit QSensorItem(QObject *parent = 0):QObject(parent)
-        {
-        index=-1;
-        chip=0;
-        feature=0;
-        sub=0;
-        tmin = tmax = 0;    // visible range in ms
-        ymin = ymax = 0;   // min/max value y-axis
-        label = "none";
-        adapter = "none";
-        color = "white";
-        unit = "none";
-        linewidth = 2;
-        offset = 0.;
-        scale = 1.;
-        max_samples = 32;
-        checked = false;
-        };
+    explicit QSensorItem(QObject *parent = 0);
 
     QString getlabel(){return label;};
     float getvalue();
@@ -92,6 +77,7 @@ public:
     const sensors_subfeature *sub;
     qint64 tmin, tmax;    // visible range in ms
     float ymin, ymax;   // min/max value y-axis
+    float minval, maxval;   // min/max values of the signal
     QString label;
     QString adapter;
     QString color;

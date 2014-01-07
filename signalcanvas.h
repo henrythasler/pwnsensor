@@ -7,7 +7,7 @@
 class SignalCanvas : public QQuickPaintedItem
 {
     Q_OBJECT
-    Q_PROPERTY(qint64 interval READ interval WRITE setinterval)
+    Q_PROPERTY(int interval READ interval WRITE setinterval)
     Q_PROPERTY(QLmSensors* sensors READ getSensors CONSTANT)
 
 public:
@@ -18,6 +18,7 @@ public:
     void setinterval(int val);
 
     QLmSensors* getSensors(){return LmSensors;};
+    QTimer *timer;
 
 signals:
 
@@ -31,7 +32,6 @@ public slots:
 private:
     int counter;
     QLmSensors *LmSensors;
-    QTimer *timer;
     QStringList palette;
 };
 #endif // SIGNALCANVAS_H

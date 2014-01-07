@@ -56,7 +56,7 @@ Rectangle {
 
                     onClicked:{
                         sensors.items[index].checked = checked;
-                        chart.chart_canvas.requestPaint();
+                        chart.update();
 //                        if(checked)
 //                            console.log("adding " + index);
 //                        else

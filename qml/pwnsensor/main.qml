@@ -1,4 +1,5 @@
 import QtQuick 2.0
+import QtGraphicalEffects 1.0
 import sensors 1.0
 
 Rectangle {
@@ -40,6 +41,10 @@ Rectangle {
         Keys.onEscapePressed: {
             Qt.quit();
         }
+        Keys.onSpacePressed: {
+            glow.visible = 1-glow.visible;
+//            tex.visible = 1-tex.visible;
+        }
 
     }
 
@@ -60,19 +65,36 @@ Rectangle {
            }
        }
 
+    GaussianBlur {
+        id: glow
+        anchors.fill: parent
+        source: chartTexture
+        radius: 8
+        samples: 16
+        visible: false
+    }
+
+    ShaderEffectSource {
+        id: chartTexture
+        anchors.fill: parent
+        sourceItem: chart
+        hideSource: true
+    }
+
     SignalCanvas{
         id: chart
         anchors.fill: parent
-
-
+        interval: 25
         function init(){
 
             for(var x=0;x<chart.sensors.items.length;x++)
                 signals.model.append({"name": chart.sensors.items[x].label,
                                       "value": chart.sensors.items[x].value,
-                                      "itemcolor": chart.sensors.items[x].color}
+                                      "itemcolor": chart.sensors.items[x].color
+//                                      "min":
+                                     }
                                      );
-            interval = root.timerinterval;
+
         }
         Component.onCompleted: init();
     }
