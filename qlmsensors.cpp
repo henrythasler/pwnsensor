@@ -133,7 +133,7 @@ QSensorItem::QSensorItem(QObject *parent) :
     offset = 0.;
     scale = 1.;
     max_samples = 32;
-    checked = true;
+    checked = false;
 }
 
 

@@ -87,8 +87,7 @@ void SignalCanvas::timerevt()
 {
     LmSensors->do_sampleValues();
 
-    if(!(counter%10))
-        qDebug() << LmSensors->items().at(0)->samples().count();
+//    if(!(counter%10)) qDebug() << LmSensors->items().at(0)->samples().count();
 
     update();
     counter++;
