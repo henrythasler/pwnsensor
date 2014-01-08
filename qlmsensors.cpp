@@ -69,7 +69,7 @@ else
         while ((feature = sensors_get_features(chip, &a)))
             {
 //                qDebug() << "  " << sensors_get_label(chip, feature);
-            QSensorItem *new_item = new QSensorItem;
+            QSensorItem *new_item = new QSensorItem();
 
             sub = sensors_get_subfeature(chip, feature, (sensors_subfeature_type)(((int)feature->type) << 8));
 
@@ -81,7 +81,7 @@ else
             new_item->sub = sub;
             new_item->max_samples = 10000;
             new_item->color = palette.at(m_sensorItems.count()%palette.count());
-            new_item->tmin = 3 * 60 * 1000;    // now is 0
+            new_item->tmin = 5 * 60 * 1000;    // now is 0
 
             switch(new_item->feature->type)
                 {
@@ -111,33 +111,29 @@ double val;
     foreach (QSensorItem* item, m_sensorItems)
         {
         item->do_sample();
-/*
-        sensors_get_value(item->chip, item->sub->number,&val);
-//        item->samples.insert(QDateTime().currentDateTime().toMSecsSinceEpoch(), (val>32000)?0:val);
-        item->m_samples.append(QSensorSample(0, QDateTime().currentDateTime().toMSecsSinceEpoch(), (val>32000)?0:(float)val));
-        if(item->samples.size() > item->max_samples)
-            {
-            int i=0;
-
-            for (int j = 0; j < item->samples.size(); ++j)
-                {
-                if(i < (item->samples.size() - item->max_samples)) item->samples.removeFirst();
-                else break;
-                i++;
-
-                }
-/*
-            foreach (qint64 key, item->samples.keys())
-                {
-                if(i < (item->samples.size() - item->max_samples)) item->samples.remove(key);
-                else break;
-                i++;
-                }
-
-            }
-*/
         }
     return true;
+}
+
+
+QSensorItem::QSensorItem(QObject *parent) :
+    QObject(parent)
+{
+    index=-1;
+    chip=0;
+    feature=0;
+    sub=0;
+    tmin = tmax = 0;    // visible range in ms
+    ymin = ymax = 0;   // min/max value y-axis
+    label = "none";
+    adapter = "none";
+    color = "white";
+    unit = "none";
+    linewidth = 2;
+    offset = 0.;
+    scale = 1.;
+    max_samples = 32;
+    checked = false;
 }
 
 

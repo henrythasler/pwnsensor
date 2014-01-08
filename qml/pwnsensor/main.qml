@@ -1,13 +1,14 @@
 import QtQuick 2.0
+import QtGraphicalEffects 1.0
 import sensors 1.0
-
 
 Rectangle {
     id: root
     width: 640
     height: 480
-    color: "black"
+    color: "#252b31"
     border.width: 0
+    property var timerinterval: 500
 
     state:"LEFT_DRAWER_OPEN"
     states:[
@@ -40,65 +41,63 @@ Rectangle {
         Keys.onEscapePressed: {
             Qt.quit();
         }
-
-    }
-
-    QLmSensors {
-        id: sensors
-
-        function init(){
-
-            for(var x=0;x<sensors.items.length;x++)
-                signals.model.append({"name": sensors.items[x].label,
-                                      "value": sensors.items[x].value,
-                                      "itemcolor": sensors.items[x].color}
-                                     );
-
-            // nothing right now
+        Keys.onSpacePressed: {
+            glow.visible = 1-glow.visible;
+//            tex.visible = 1-tex.visible;
         }
-        Component.onCompleted: init();
+
     }
 
     Timer {
         id:maintimer
-        interval: 200; running: true; repeat: true
+        interval: root.timerinterval;
+        running: true;
+        repeat: true
         property var counter:0;
 
         onTriggered:
            {
            counter++;
-//           if(!(counter%10))
-            sensors.do_sampleValues();
-
-           for(var x=0;x<sensors.items.length;x++)
+           for(var x=0;x<chart.sensors.items.length;x++)
                 {
-                if(sensors.items[x].samples.length)
-                    {
-                        // this causes a memory leak!!
-//                    signals.model.setProperty(x,"value", sensors.items[x].samples[sensors.items[x].samples.length-1].value);
-
-                      // this is better
-                    signals.model.setProperty(x,"value", sensors.items[x].value);
-                    }
+                signals.model.setProperty(x,"value", chart.sensors.items[x].value);
                 }
-
-//           if(!(counter%10))
-             chart.chart_canvas.requestPaint();
-
-           if(!(counter%100)) console.log(sensors.items[0].samples.length);
            }
        }
 
+    GaussianBlur {
+        id: glow
+        anchors.fill: parent
+        source: chartTexture
+        radius: 8
+        samples: 16
+        visible: false
+    }
 
+    ShaderEffectSource {
+        id: chartTexture
+        anchors.fill: parent
+        sourceItem: chart
+        hideSource: true
+    }
 
-
-    Chart {
+    SignalCanvas{
         id: chart
-        width: root.width
-        height: root.height
-        sensors: sensors
-        current_item: signals.selected_item
+        anchors.fill: parent
+        interval: 25
+        function init(){
+
+            for(var x=0;x<chart.sensors.items.length;x++)
+                signals.model.append({"name": chart.sensors.items[x].label,
+                                      "value": chart.sensors.items[x].value,
+                                      "itemcolor": chart.sensors.items[x].color
+//                                      "min":
+                                     }
+                                     );
+
         }
+        Component.onCompleted: init();
+    }
 
 
     Rectangle{
@@ -128,7 +127,7 @@ Rectangle {
 
     SignalList{
         id:signals
-        sensors: sensors
+        sensors: chart.sensors
         height: root.height
         chart: chart
         width: 190
