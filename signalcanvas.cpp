@@ -3,10 +3,12 @@
 #define MAX(a,b) (((a)>(b))?(a):(b))
 
 SignalCanvas::SignalCanvas(QQuickItem *parent) :
-    QQuickPaintedItem(parent)
+    QQuickItem(parent)
 {
     LmSensors = new QLmSensors();
 
+
+    setFlag(ItemHasContents);
     // 20%-30%, but no AA
 //    setRenderTarget(FramebufferObject);
 //    setPerformanceHint(FastFBOResizing);
@@ -16,10 +18,11 @@ SignalCanvas::SignalCanvas(QQuickItem *parent) :
     timer->start(100);
 }
 
+/*
 void SignalCanvas::paint(QPainter *painter)
 {
     QColor color = QColor((const QString)"white");
-    QPen pen = QPen(/*QBrush(color), 2.*/);
+    QPen pen = QPen();
     int point_cnt=0, samples=0;
     int s=0;
     int dx=1;
@@ -75,7 +78,21 @@ void SignalCanvas::paint(QPainter *painter)
 
 //    painter->drawRoundedRect(0, 0, boundingRect().width(), boundingRect().height(), 20, 20);
 }
+*/
 
+
+QSGNode *SignalCanvas::updatePaintNode(QSGNode *node, UpdatePaintNodeData *)
+{
+    QSGSimpleRectNode *n = static_cast<QSGSimpleRectNode *>(node);
+    if (!n) {
+        n = new QSGSimpleRectNode();
+    }
+    QColor color = QColor();
+    color.setHslF(float(counter%500)/500.,1.,0.5);
+    n->setColor(color);
+    n->setRect(boundingRect());
+    return n;
+}
 
 void SignalCanvas::setinterval(int val)
 {
@@ -87,7 +104,7 @@ void SignalCanvas::timerevt()
 {
     LmSensors->do_sampleValues();
 
-//    if(!(counter%10)) qDebug() << LmSensors->items().at(0)->samples().count();
+    if(!(counter%10)) qDebug() << LmSensors->items().at(0)->samples().count();
 
     update();
     counter++;

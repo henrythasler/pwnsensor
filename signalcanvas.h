@@ -4,7 +4,7 @@
 #include <QtQuick>
 #include "qlmsensors.h"
 
-class SignalCanvas : public QQuickPaintedItem
+class SignalCanvas : public QQuickItem
 {
     Q_OBJECT
     Q_PROPERTY(int interval READ interval WRITE setinterval)
@@ -12,7 +12,8 @@ class SignalCanvas : public QQuickPaintedItem
 
 public:
     explicit SignalCanvas(QQuickItem *parent = 0);
-    void paint(QPainter *painter);
+    QSGNode *updatePaintNode(QSGNode *node, UpdatePaintNodeData *);
+//    void paint(QPainter *painter);
 
     int interval(){return timer->interval();};
     void setinterval(int val);
