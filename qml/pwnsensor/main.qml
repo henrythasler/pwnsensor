@@ -84,7 +84,7 @@ Rectangle {
     SignalCanvas{
         id: chart
         anchors.fill: parent
-        interval: 25
+        interval: 100
         function init(){
 
             for(var x=0;x<chart.sensors.items.length;x++)

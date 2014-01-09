@@ -16,9 +16,16 @@ int main(int argc, char *argv[])
     qmlRegisterType<SignalCanvas>("sensors", 1, 0, "SignalCanvas");
 
     QtQuick2ApplicationViewer viewer;
+
+    QSurfaceFormat format = viewer.format();
+    format.setSamples(16);
+    viewer.setFormat(format);
+
     viewer.setTitle("pwnsensor QQuickItem");
     viewer.setMainQmlFile(QStringLiteral("qml/pwnsensor/main.qml"));
     viewer.showExpanded();
+
+
 
     return app.exec();
 }

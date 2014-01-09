@@ -4,6 +4,26 @@
 #include <QtQuick>
 #include "qlmsensors.h"
 
+
+class LineNode : public QSGGeometryNode
+{
+public:
+    LineNode(QSensorItem *sensor = 0);
+
+    void updateGeometry(const QRectF &bounds);
+
+private:
+    QSGGeometry *m_geometry;
+    QSensorItem *m_sensor;
+
+};
+
+class RootNode : public QSGNode
+{
+public:
+    QVector<LineNode*> lines;
+};
+
 class SignalCanvas : public QQuickItem
 {
     Q_OBJECT

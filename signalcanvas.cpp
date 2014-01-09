@@ -9,6 +9,9 @@ SignalCanvas::SignalCanvas(QQuickItem *parent) :
 
 
     setFlag(ItemHasContents);
+//    setAntialiasing(true);
+
+
     // 20%-30%, but no AA
 //    setRenderTarget(FramebufferObject);
 //    setPerformanceHint(FastFBOResizing);
@@ -81,17 +84,75 @@ void SignalCanvas::paint(QPainter *painter)
 */
 
 
-QSGNode *SignalCanvas::updatePaintNode(QSGNode *node, UpdatePaintNodeData *)
+QSGNode *SignalCanvas::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *)
 {
-    QSGSimpleRectNode *n = static_cast<QSGSimpleRectNode *>(node);
-    if (!n) {
-        n = new QSGSimpleRectNode();
+
+    RootNode *root= static_cast<RootNode *>(oldNode);
+
+    QRectF rect = boundingRect();
+
+    if (rect.isEmpty()) {
+        delete root;
+        return 0;
     }
-    QColor color = QColor();
-    color.setHslF(float(counter%500)/500.,1.,0.5);
-    n->setColor(color);
-    n->setRect(boundingRect());
-    return n;
+
+    if (!root) {
+        root = new RootNode();
+//        LineNode *line = new LineNode(LmSensors->items().at(0));
+        root->lines.append(new LineNode(LmSensors->items().at(2)));
+        root->appendChildNode(root->lines.at(0));
+    }
+    else {
+        root->lines.at(0)->updateGeometry(rect);
+        }
+
+    return root;
+
+//    QSGGeometryNode *node = 0;
+//    QSGGeometry *geometry = 0;
+
+//    int m_segmentCount = LmSensors->items().at(27)->samples().count();
+
+//    if (!oldNode) {
+//        node = new QSGGeometryNode;
+//        geometry = new QSGGeometry(QSGGeometry::defaultAttributes_Point2D(), m_segmentCount);
+//        geometry->setLineWidth(1);
+//        geometry->setDrawingMode(GL_LINE_STRIP);
+//        node->setGeometry(geometry);
+//        node->setFlag(QSGNode::OwnsGeometry);
+//        QSGFlatColorMaterial *material = new QSGFlatColorMaterial;
+//        material->setColor(QColor(255, 0, 0));
+//        node->setMaterial(material);
+//        node->setFlag(QSGNode::OwnsMaterial);
+//    } else {
+//        node = static_cast<QSGGeometryNode *>(oldNode);
+//        geometry = node->geometry();
+//        geometry->allocate(m_segmentCount);
+//    }
+
+//    QRectF bounds = boundingRect();
+//    QSGGeometry::Point2D *vertices = geometry->vertexDataAsPoint2D();
+//    for (int i = 0; i < m_segmentCount; ++i)
+//        {
+//        vertices[i].set(float(i), LmSensors->items().at(27)->samples().at(i)->value()*4.);
+//        }
+//    node->markDirty(QSGNode::DirtyGeometry);
+
+//    return node;
+
+
+
+
+//    QSGSimpleRectNode *n = static_cast<QSGSimpleRectNode *>(oldNode);
+//    if (!n) {
+//        n = new QSGSimpleRectNode();
+//    }
+//    QColor color = QColor();
+//    color.setHslF(float(counter%500)/500.,1.,0.5);
+//    n->setColor(color);
+//    n->setRect(boundingRect());
+//    return n;
+
 }
 
 void SignalCanvas::setinterval(int val)
@@ -109,4 +170,34 @@ void SignalCanvas::timerevt()
     update();
     counter++;
 
+}
+
+
+
+LineNode::LineNode(QSensorItem *sensor)
+    :m_sensor(sensor)
+{
+    m_geometry = new QSGGeometry(QSGGeometry::defaultAttributes_Point2D(), m_sensor->samples().count());
+    m_geometry->setLineWidth(10.);
+    m_geometry->setDrawingMode(GL_LINE_STRIP);
+    setGeometry(m_geometry);
+    setFlag(QSGNode::OwnsGeometry);
+    QSGFlatColorMaterial *material = new QSGFlatColorMaterial;
+    material->setColor(QColor(255, 0, 0));
+    setMaterial(material);
+    setFlag(QSGNode::OwnsMaterial);
+}
+
+
+void LineNode::updateGeometry(const QRectF &bounds)
+{
+        m_geometry->allocate(m_sensor->samples().count());
+        QSGGeometry::Point2D *vertices = m_geometry->vertexDataAsPoint2D();
+
+        for (int i = 0; i < m_sensor->samples().count(); ++i)
+            {
+            vertices[i].set(float(i), m_sensor->samples().at(i)->value()+0.5);
+//            vertices[i].set(float(i*10), sin(float(i))*100+150);
+            }
+    markDirty(QSGNode::DirtyGeometry);
 }
