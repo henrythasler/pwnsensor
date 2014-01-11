@@ -129,7 +129,7 @@ QSensorItem::QSensorItem(QObject *parent) :
     adapter = "none";
     color = "white";
     unit = "none";
-    linewidth = 2;
+    linewidth = 2.;
     offset = 0.;
     scale = 1.;
     max_samples = 32;

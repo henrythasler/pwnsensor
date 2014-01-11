@@ -19,6 +19,7 @@ private:
     QSensorItem *m_sensor;
     qint64 m_timestamp;
     QSGFlatColorMaterial *m_material;
+    QColor m_color;
 };
 
 class RootNode : public QSGNode

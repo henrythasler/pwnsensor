@@ -177,7 +177,7 @@ void SignalCanvas::setinterval(int val)
 void SignalCanvas::timerevt()
 {
     LmSensors->do_sampleValues();
-//    if(!(counter%10)) qDebug() << LmSensors->items().at(0)->samples().count();
+    if(!(counter%20)) qDebug() << LmSensors->items().at(0)->samples().count();
     update();
     counter++;
 
@@ -189,15 +189,14 @@ LineNode::LineNode(QSensorItem *sensor)
     :m_sensor(sensor)
 {
     m_geometry = new QSGGeometry(QSGGeometry::defaultAttributes_Point2D(), m_sensor->samples().count());
-    m_geometry->setDrawingMode(GL_TRIANGLE_STRIP);
+    m_geometry->setDrawingMode(GL_QUADS);
 //    m_geometry->setLineWidth(3.);
     setGeometry(m_geometry);
     setFlag(QSGNode::OwnsGeometry);
 
     m_material = new QSGFlatColorMaterial();
-    QColor color = QColor();
-    color.setNamedColor(m_sensor->color);
-    m_material->setColor(color);
+    m_color.setNamedColor(m_sensor->color);
+    m_material->setColor(m_color);
 
     setMaterial(m_material);
     setFlag(QSGNode::OwnsMaterial);
@@ -206,39 +205,52 @@ LineNode::LineNode(QSensorItem *sensor)
 
 void LineNode::updateGeometry(const QRectF &bounds)
 {
-    qint64 tmin = m_sensor->tmin;
-    float scale_y = bounds.height() / (m_sensor->ymax - m_sensor->ymin);
-    float scale_x = -bounds.width() / tmin;
-
-    if(m_sensor->checked)
+    if(m_sensor->checked && m_sensor->samples().count()>1)
         {
-        m_geometry->allocate(m_sensor->samples().count()*2);
+        m_geometry->allocate((m_sensor->samples().count()-1)*4);
         QSGGeometry::Point2D *vertices = m_geometry->vertexDataAsPoint2D();
 
-        for(int s=0; s<m_sensor->samples().count(); s++)
+        m_color.setNamedColor(m_sensor->color);
+        if(m_material->color() != m_color)
             {
-            vertices[s*2].set((m_timestamp - m_sensor->samples().at(s)->time() - tmin) * scale_x,
-                            bounds.height()-(m_sensor->samples().at(s)->value() - m_sensor->ymin) * scale_y
-                            );
-            vertices[s*2+1].set((m_timestamp - m_sensor->samples().at(s)->time() - tmin) * scale_x,
-                            bounds.height()-(m_sensor->samples().at(s)->value() - m_sensor->ymin) * scale_y + 2.
-                            );
+            m_material->setColor(m_color);
+            markDirty(QSGNode::DirtyMaterial);
+            }
 
+        qint64 tmin = m_sensor->tmin;
+        float scale_y = bounds.height() / (m_sensor->ymax - m_sensor->ymin);
+        float scale_x = -bounds.width() / tmin;
+        float offset = m_sensor->linewidth/2.;
+
+        QVector2D start = QVector2D((m_timestamp - m_sensor->samples().at(0)->time() - tmin) * scale_x,
+                                    bounds.height()-(m_sensor->samples().at(0)->value() - m_sensor->ymin) * scale_y
+                                    );
+        QVector2D end, a,b,c,d;
+
+        for(int s=1; s<m_sensor->samples().count(); s++)
+            {
+            end.setX((m_timestamp - m_sensor->samples().at(s)->time() - tmin) * scale_x);
+            end.setY(bounds.height()-(m_sensor->samples().at(s)->value() - m_sensor->ymin) * scale_y);
+
+            QVector3D normal = QVector3D::normal((end-start).toVector3D(), QVector3D(0,0,1));
+
+            a = start+(offset*normal).toVector2D();
+            b = end+(offset*normal).toVector2D();
+            c = end-(offset*normal).toVector2D();
+            d = start-(offset*normal).toVector2D();
+
+            vertices[(s-1)*4].set(a.x(),a.y());
+            vertices[(s-1)*4+1].set(b.x(),b.y());
+            vertices[(s-1)*4+2].set(c.x(),c.y());
+            vertices[(s-1)*4+3].set(d.x(),d.y());
+
+            start = end;
             }
         }
     else
         {
         m_geometry->allocate(0);
         }
-/*
-        m_geometry->allocate(m_sensor->samples().count());
-        QSGGeometry::Point2D *vertices = m_geometry->vertexDataAsPoint2D();
 
-        for (int i = 0; i < m_sensor->samples().count(); ++i)
-            {
-            vertices[i].set(float(i), m_sensor->samples().at(i)->value()+0.5);
-//            vertices[i].set(float(i*10), sin(float(i))*100+150);
-            }
-*/
     markDirty(QSGNode::DirtyGeometry);
 }

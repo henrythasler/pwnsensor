@@ -27,7 +27,7 @@ Rectangle {
                 onAccepted: {
                             sensors.items[index].color=currentColor;
                             colorIndicator.color = sensors.items[index].color;
-                            chart.chart_canvas.requestPaint();
+                            chart.update();
 //                            console.log(sensors.items[index].color + "" + colorDialog.color);
                             }
 //                onRejected: { console.log("Rejected") }
