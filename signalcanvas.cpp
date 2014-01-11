@@ -98,12 +98,25 @@ QSGNode *SignalCanvas::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *)
 
     if (!root) {
         root = new RootNode();
-//        LineNode *line = new LineNode(LmSensors->items().at(0));
-        root->lines.append(new LineNode(LmSensors->items().at(2)));
-        root->appendChildNode(root->lines.at(0));
+        for(int i=0; i<LmSensors->items().count();i++)
+            {
+            root->lines.append(new LineNode(LmSensors->items().at(i)));
+
+            root->appendChildNode(root->lines.at(i));
+            root->lines.at(i)->setTimestamp(LmSensors->timestamp());
+            root->lines.at(i)->updateGeometry(rect);
+            }
+
     }
     else {
-        root->lines.at(0)->updateGeometry(rect);
+
+        qint64 timestamp=LmSensors->timestamp();
+
+        for(int i=0; i<LmSensors->items().count();i++)
+            {
+            root->lines.at(i)->setTimestamp(timestamp);
+            root->lines.at(i)->updateGeometry(rect);
+            }
         }
 
     return root;
@@ -164,9 +177,7 @@ void SignalCanvas::setinterval(int val)
 void SignalCanvas::timerevt()
 {
     LmSensors->do_sampleValues();
-
-    if(!(counter%10)) qDebug() << LmSensors->items().at(0)->samples().count();
-
+//    if(!(counter%10)) qDebug() << LmSensors->items().at(0)->samples().count();
     update();
     counter++;
 
@@ -178,19 +189,48 @@ LineNode::LineNode(QSensorItem *sensor)
     :m_sensor(sensor)
 {
     m_geometry = new QSGGeometry(QSGGeometry::defaultAttributes_Point2D(), m_sensor->samples().count());
-    m_geometry->setLineWidth(10.);
-    m_geometry->setDrawingMode(GL_LINE_STRIP);
+    m_geometry->setDrawingMode(GL_TRIANGLE_STRIP);
+//    m_geometry->setLineWidth(3.);
     setGeometry(m_geometry);
     setFlag(QSGNode::OwnsGeometry);
-    QSGFlatColorMaterial *material = new QSGFlatColorMaterial;
-    material->setColor(QColor(255, 0, 0));
-    setMaterial(material);
+
+    m_material = new QSGFlatColorMaterial();
+    QColor color = QColor();
+    color.setNamedColor(m_sensor->color);
+    m_material->setColor(color);
+
+    setMaterial(m_material);
     setFlag(QSGNode::OwnsMaterial);
 }
 
 
 void LineNode::updateGeometry(const QRectF &bounds)
 {
+    qint64 tmin = m_sensor->tmin;
+    float scale_y = bounds.height() / (m_sensor->ymax - m_sensor->ymin);
+    float scale_x = -bounds.width() / tmin;
+
+    if(m_sensor->checked)
+        {
+        m_geometry->allocate(m_sensor->samples().count()*2);
+        QSGGeometry::Point2D *vertices = m_geometry->vertexDataAsPoint2D();
+
+        for(int s=0; s<m_sensor->samples().count(); s++)
+            {
+            vertices[s*2].set((m_timestamp - m_sensor->samples().at(s)->time() - tmin) * scale_x,
+                            bounds.height()-(m_sensor->samples().at(s)->value() - m_sensor->ymin) * scale_y
+                            );
+            vertices[s*2+1].set((m_timestamp - m_sensor->samples().at(s)->time() - tmin) * scale_x,
+                            bounds.height()-(m_sensor->samples().at(s)->value() - m_sensor->ymin) * scale_y + 2.
+                            );
+
+            }
+        }
+    else
+        {
+        m_geometry->allocate(0);
+        }
+/*
         m_geometry->allocate(m_sensor->samples().count());
         QSGGeometry::Point2D *vertices = m_geometry->vertexDataAsPoint2D();
 
@@ -199,5 +239,6 @@ void LineNode::updateGeometry(const QRectF &bounds)
             vertices[i].set(float(i), m_sensor->samples().at(i)->value()+0.5);
 //            vertices[i].set(float(i*10), sin(float(i))*100+150);
             }
+*/
     markDirty(QSGNode::DirtyGeometry);
 }

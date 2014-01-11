@@ -10,12 +10,15 @@ class LineNode : public QSGGeometryNode
 public:
     LineNode(QSensorItem *sensor = 0);
 
+    void setTimestamp(qint64 new_time){m_timestamp=new_time;};
+
     void updateGeometry(const QRectF &bounds);
 
 private:
     QSGGeometry *m_geometry;
     QSensorItem *m_sensor;
-
+    qint64 m_timestamp;
+    QSGFlatColorMaterial *m_material;
 };
 
 class RootNode : public QSGNode
