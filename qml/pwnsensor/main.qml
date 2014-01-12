@@ -8,7 +8,8 @@ Rectangle {
     height: 480
     color: "#252b31"
     border.width: 0
-    property var timerinterval: 500
+    property var timerinterval: 100
+    property var t_min: 10
 
     state:"LEFT_DRAWER_OPEN"
     states:[
@@ -84,7 +85,8 @@ Rectangle {
     SignalCanvas{
         id: chart
         anchors.fill: parent
-        interval: 1000
+        interval: timerinterval
+        tmin: t_min
         function init(){
 
             for(var x=0;x<chart.sensors.items.length;x++)
@@ -103,9 +105,9 @@ Rectangle {
             anchors.fill:parent
             onWheel:{
                     if (wheel.angleDelta.y > 0)
-                        console.log(wheel.y+" zoomin "+wheel.x);
+                        t_min /= 2;
                     else
-                        console.log(wheel.y+" zooout "+wheel.x);
+                        t_min *=2;
             }
         }
     }

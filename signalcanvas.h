@@ -48,6 +48,7 @@ class SignalCanvas : public QQuickItem
 {
     Q_OBJECT
     Q_PROPERTY(int interval READ interval WRITE setinterval)
+    Q_PROPERTY(int tmin READ tmin WRITE settmin)
     Q_PROPERTY(QLmSensors* sensors READ getSensors CONSTANT)
 
 public:
@@ -55,7 +56,10 @@ public:
     QSGNode *updatePaintNode(QSGNode *node, UpdatePaintNodeData *);
 
     int interval(){return timer->interval();};
-    void setinterval(int val);
+    void setinterval(int val){timer->setInterval(val);};
+
+    int tmin(){return m_tmin;};
+    void settmin(int val){m_tmin=val;};
 
     QLmSensors* getSensors(){return LmSensors;};
     QTimer *timer;
@@ -74,5 +78,7 @@ private:
     QLmSensors *LmSensors;
     QStringList palette;
     QRectF old_rect;
+
+    qint64 m_tmin;
 };
 #endif // SIGNALCANVAS_H

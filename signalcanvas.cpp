@@ -122,6 +122,7 @@ QSGNode *SignalCanvas::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *)
         for(int i=0; i<LmSensors->items().count();i++)
             {
             root->lines.at(i)->setTimestamp(timestamp);
+            LmSensors->items().at(i)->tmin = m_tmin*1000;
             root->lines.at(i)->updateGeometry(rect.adjusted(10,10,-10,-10));
             }
         }
@@ -130,11 +131,6 @@ QSGNode *SignalCanvas::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *)
     return root;
 }
 
-void SignalCanvas::setinterval(int val)
-{
-//    qDebug() << val;
-    timer->setInterval(val);
-}
 
 void SignalCanvas::timerevt()
 {
