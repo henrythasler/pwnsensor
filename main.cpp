@@ -18,6 +18,9 @@ int main(int argc, char *argv[])
     QtQuick2ApplicationViewer viewer;
 
     QSurfaceFormat format = viewer.format();
+
+    qDebug() << "OpenGL v" << format.majorVersion() << "." << format.minorVersion();
+
     format.setSamples(16);
     viewer.setFormat(format);
 

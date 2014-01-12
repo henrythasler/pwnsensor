@@ -98,13 +98,18 @@ QSGNode *SignalCanvas::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *)
 
     if (!root) {
         root = new RootNode();
+
+        root->grid = new GridNode();
+        root->appendChildNode(root->grid);
+        root->grid->updateGeometry(rect.adjusted(10,10,-10,-10));
+
         for(int i=0; i<LmSensors->items().count();i++)
             {
             root->lines.append(new LineNode(LmSensors->items().at(i)));
 
             root->appendChildNode(root->lines.at(i));
             root->lines.at(i)->setTimestamp(LmSensors->timestamp());
-            root->lines.at(i)->updateGeometry(rect);
+            root->lines.at(i)->updateGeometry(rect.adjusted(10,10,-10,-10));
             }
 
     }
@@ -112,75 +117,71 @@ QSGNode *SignalCanvas::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *)
 
         qint64 timestamp=LmSensors->timestamp();
 
+        root->grid->updateGeometry(rect.adjusted(10,10,-10,-10));
+
         for(int i=0; i<LmSensors->items().count();i++)
             {
             root->lines.at(i)->setTimestamp(timestamp);
-            root->lines.at(i)->updateGeometry(rect);
+            root->lines.at(i)->updateGeometry(rect.adjusted(10,10,-10,-10));
             }
         }
 
     return root;
-
-//    QSGGeometryNode *node = 0;
-//    QSGGeometry *geometry = 0;
-
-//    int m_segmentCount = LmSensors->items().at(27)->samples().count();
-
-//    if (!oldNode) {
-//        node = new QSGGeometryNode;
-//        geometry = new QSGGeometry(QSGGeometry::defaultAttributes_Point2D(), m_segmentCount);
-//        geometry->setLineWidth(1);
-//        geometry->setDrawingMode(GL_LINE_STRIP);
-//        node->setGeometry(geometry);
-//        node->setFlag(QSGNode::OwnsGeometry);
-//        QSGFlatColorMaterial *material = new QSGFlatColorMaterial;
-//        material->setColor(QColor(255, 0, 0));
-//        node->setMaterial(material);
-//        node->setFlag(QSGNode::OwnsMaterial);
-//    } else {
-//        node = static_cast<QSGGeometryNode *>(oldNode);
-//        geometry = node->geometry();
-//        geometry->allocate(m_segmentCount);
-//    }
-
-//    QRectF bounds = boundingRect();
-//    QSGGeometry::Point2D *vertices = geometry->vertexDataAsPoint2D();
-//    for (int i = 0; i < m_segmentCount; ++i)
-//        {
-//        vertices[i].set(float(i), LmSensors->items().at(27)->samples().at(i)->value()*4.);
-//        }
-//    node->markDirty(QSGNode::DirtyGeometry);
-
-//    return node;
-
-
-
-
-//    QSGSimpleRectNode *n = static_cast<QSGSimpleRectNode *>(oldNode);
-//    if (!n) {
-//        n = new QSGSimpleRectNode();
-//    }
-//    QColor color = QColor();
-//    color.setHslF(float(counter%500)/500.,1.,0.5);
-//    n->setColor(color);
-//    n->setRect(boundingRect());
-//    return n;
-
 }
 
 void SignalCanvas::setinterval(int val)
 {
-    qDebug() << val;
+//    qDebug() << val;
     timer->setInterval(val);
 }
 
 void SignalCanvas::timerevt()
 {
+    counter++;
     LmSensors->do_sampleValues();
     if(!(counter%20)) qDebug() << LmSensors->items().at(0)->samples().count();
     update();
-    counter++;
 
+}
+
+
+GridNode::GridNode()
+{
+    m_geometry = new QSGGeometry(QSGGeometry::defaultAttributes_Point2D(), 0);
+    m_geometry->setDrawingMode(GL_LINES);
+    setGeometry(m_geometry);
+    setFlag(QSGNode::OwnsGeometry);
+
+    m_material = new QSGFlatColorMaterial();
+    m_color.setNamedColor("red");
+    m_material->setColor(m_color);
+
+    setMaterial(m_material);
+    setFlag(QSGNode::OwnsMaterial);
+}
+
+
+void GridNode::updateGeometry(const QRectF &bounds)
+{
+    int cnt=0;
+    int nx=16;
+    int ny=12;
+
+    m_geometry->allocate((nx+1)*(ny+1)*2);
+    QSGGeometry::Point2D *vertices = m_geometry->vertexDataAsPoint2D();
+
+    for(int x=0; x<=nx;x++)
+        {
+        vertices[cnt++].set(int(bounds.topLeft().x()+bounds.width()/nx*x)+0.5, int(bounds.topLeft().y())+0.5);
+        vertices[cnt++].set(int(bounds.bottomLeft().x()+bounds.width()/nx*x)+0.5, int(bounds.bottomLeft().y())+0.5);
+        }
+
+    for(int y=0; y<=ny;y++)
+        {
+        vertices[cnt++].set(int(bounds.topRight().x())+0.5, int(bounds.topRight().y()+bounds.height()/ny*y)+0.5);
+        vertices[cnt++].set(int(bounds.topLeft().x())+0.5, int(bounds.topLeft().y()+bounds.height()/ny*y)+0.5);
+        }
+    markDirty(QSGNode::DirtyGeometry);
 }
 
 
@@ -189,8 +190,7 @@ LineNode::LineNode(QSensorItem *sensor)
     :m_sensor(sensor)
 {
     m_geometry = new QSGGeometry(QSGGeometry::defaultAttributes_Point2D(), m_sensor->samples().count());
-    m_geometry->setDrawingMode(GL_QUADS);
-//    m_geometry->setLineWidth(3.);
+    m_geometry->setDrawingMode(GL_TRIANGLE_STRIP);
     setGeometry(m_geometry);
     setFlag(QSGNode::OwnsGeometry);
 
@@ -222,22 +222,30 @@ void LineNode::updateGeometry(const QRectF &bounds)
         float scale_x = -bounds.width() / tmin;
         float offset = m_sensor->linewidth/2.;
 
-        QVector2D start = QVector2D((m_timestamp - m_sensor->samples().at(0)->time() - tmin) * scale_x,
-                                    bounds.height()-(m_sensor->samples().at(0)->value() - m_sensor->ymin) * scale_y
+        QVector2D start = QVector2D(bounds.left()+(m_timestamp - m_sensor->samples().at(0)->time() - tmin) * scale_x,
+                                    bounds.top()+bounds.height()-(m_sensor->samples().at(0)->value() - m_sensor->ymin) * scale_y
                                     );
         QVector2D end, a,b,c,d;
 
         for(int s=1; s<m_sensor->samples().count(); s++)
             {
-            end.setX((m_timestamp - m_sensor->samples().at(s)->time() - tmin) * scale_x);
-            end.setY(bounds.height()-(m_sensor->samples().at(s)->value() - m_sensor->ymin) * scale_y);
+            end.setX(bounds.left()+(m_timestamp - m_sensor->samples().at(s)->time() - tmin) * scale_x);
+            end.setY(bounds.top()+bounds.height()-(m_sensor->samples().at(s)->value() - m_sensor->ymin) * scale_y);
 
-            QVector3D normal = QVector3D::normal((end-start).toVector3D(), QVector3D(0,0,1));
+            QVector2D normal(-(end.y()-start.y()), (end.x()-start.x()));
+            normal.normalize();
 
-            a = start+(offset*normal).toVector2D();
-            b = end+(offset*normal).toVector2D();
-            c = end-(offset*normal).toVector2D();
-            d = start-(offset*normal).toVector2D();
+            // GL_QUADS
+//            a = start+(offset*normal);
+//            b = end+(offset*normal);
+//            c = end-(offset*normal);
+//            d = start-(offset*normal);
+
+            // GL_TRIANGLE_STRIP
+            a = start+(offset*normal);
+            c = end+(offset*normal);
+            d = end-(offset*normal);
+            b = start-(offset*normal);
 
             vertices[(s-1)*4].set(a.x(),a.y());
             vertices[(s-1)*4+1].set(b.x(),b.y());

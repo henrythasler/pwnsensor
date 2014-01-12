@@ -22,10 +22,26 @@ private:
     QColor m_color;
 };
 
+
+class GridNode : public QSGGeometryNode
+{
+public:
+    GridNode();
+
+    void updateGeometry(const QRectF &bounds);
+
+private:
+    QSGGeometry *m_geometry;
+    QSGFlatColorMaterial *m_material;
+    QColor m_color;
+};
+
+
 class RootNode : public QSGNode
 {
 public:
     QVector<LineNode*> lines;
+    GridNode *grid;
 };
 
 class SignalCanvas : public QQuickItem
@@ -37,7 +53,6 @@ class SignalCanvas : public QQuickItem
 public:
     explicit SignalCanvas(QQuickItem *parent = 0);
     QSGNode *updatePaintNode(QSGNode *node, UpdatePaintNodeData *);
-//    void paint(QPainter *painter);
 
     int interval(){return timer->interval();};
     void setinterval(int val);
