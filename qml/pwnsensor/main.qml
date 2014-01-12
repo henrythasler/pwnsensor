@@ -97,6 +97,17 @@ Rectangle {
 
         }
         Component.onCompleted: init();
+
+        MouseArea{
+            id: zoomarea
+            anchors.fill:parent
+            onWheel:{
+                    if (wheel.angleDelta.y > 0)
+                        console.log(wheel.y+" zoomin "+wheel.x);
+                    else
+                        console.log(wheel.y+" zooout "+wheel.x);
+            }
+        }
     }
 
 

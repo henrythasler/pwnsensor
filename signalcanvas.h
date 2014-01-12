@@ -73,5 +73,6 @@ private:
     int counter;
     QLmSensors *LmSensors;
     QStringList palette;
+    QRectF old_rect;
 };
 #endif // SIGNALCANVAS_H

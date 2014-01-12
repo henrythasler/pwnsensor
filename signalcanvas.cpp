@@ -114,10 +114,10 @@ QSGNode *SignalCanvas::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *)
 
     }
     else {
-
         qint64 timestamp=LmSensors->timestamp();
 
-        root->grid->updateGeometry(rect.adjusted(10,10,-10,-10));
+        if(rect != old_rect)
+            root->grid->updateGeometry(rect.adjusted(10,10,-10,-10));
 
         for(int i=0; i<LmSensors->items().count();i++)
             {
@@ -126,6 +126,7 @@ QSGNode *SignalCanvas::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *)
             }
         }
 
+    old_rect = rect;
     return root;
 }
 
@@ -153,7 +154,7 @@ GridNode::GridNode()
     setFlag(QSGNode::OwnsGeometry);
 
     m_material = new QSGFlatColorMaterial();
-    m_color.setNamedColor("red");
+    m_color.setNamedColor("#424a51");
     m_material->setColor(m_color);
 
     setMaterial(m_material);
