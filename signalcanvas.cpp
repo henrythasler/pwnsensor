@@ -204,7 +204,21 @@ void LineNode::updateGeometry(const QRectF &bounds)
 {
     if(m_sensor->checked && m_sensor->samples().count()>1)
         {
-        m_geometry->allocate((m_sensor->samples().count()-1)*4);
+        int first_sample,last_sample;
+
+        for(int x=0;x<m_sensor->samples().count();x++)
+            {
+            if(m_sensor->samples().at(x)->time() >= (m_timestamp-m_sensor->tmin))
+                {
+                first_sample = x;
+                break;
+                }
+            }
+
+        last_sample = m_sensor->samples().count()-1;
+//        first_sample = 0;
+
+        m_geometry->allocate(MAX(last_sample-first_sample, 0)*4);
         QSGGeometry::Point2D *vertices = m_geometry->vertexDataAsPoint2D();
 
         m_color.setNamedColor(m_sensor->color);
@@ -219,12 +233,12 @@ void LineNode::updateGeometry(const QRectF &bounds)
         float scale_x = -bounds.width() / tmin;
         float offset = m_sensor->linewidth/2.;
 
-        QVector2D start = QVector2D(bounds.left()+(m_timestamp - m_sensor->samples().at(0)->time() - tmin) * scale_x,
-                                    bounds.top()+bounds.height()-(m_sensor->samples().at(0)->value() - m_sensor->ymin) * scale_y
+        QVector2D start = QVector2D(bounds.left()+(m_timestamp - m_sensor->samples().at(first_sample)->time() - tmin) * scale_x,
+                                    bounds.top()+bounds.height()-(m_sensor->samples().at(first_sample)->value() - m_sensor->ymin) * scale_y
                                     );
         QVector2D end, a,b,c,d;
 
-        for(int s=1; s<m_sensor->samples().count(); s++)
+        for(int s=first_sample+1, v=0; s<=last_sample; s++)
             {
             end.setX(bounds.left()+(m_timestamp - m_sensor->samples().at(s)->time() - tmin) * scale_x);
             end.setY(bounds.top()+bounds.height()-(m_sensor->samples().at(s)->value() - m_sensor->ymin) * scale_y);
@@ -244,10 +258,10 @@ void LineNode::updateGeometry(const QRectF &bounds)
             d = end-(offset*normal);
             b = start-(offset*normal);
 
-            vertices[(s-1)*4].set(a.x(),a.y());
-            vertices[(s-1)*4+1].set(b.x(),b.y());
-            vertices[(s-1)*4+2].set(c.x(),c.y());
-            vertices[(s-1)*4+3].set(d.x(),d.y());
+            vertices[v++].set(a.x(),a.y());
+            vertices[v++].set(b.x(),b.y());
+            vertices[v++].set(c.x(),c.y());
+            vertices[v++].set(d.x(),d.y());
 
             start = end;
             }

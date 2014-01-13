@@ -96,6 +96,8 @@ else
                         break;
                 }
 
+//            if(new_item->index == 0) new_item->checked=true;
+
             m_sensorItems.append(new_item);
             }
         }
@@ -133,7 +135,7 @@ QSensorItem::QSensorItem(QObject *parent) :
     offset = 0.;
     scale = 1.;
     max_samples = 32;
-    checked = false;
+    checked = true;
 }
 
 

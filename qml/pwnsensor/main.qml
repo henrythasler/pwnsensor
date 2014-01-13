@@ -8,8 +8,8 @@ Rectangle {
     height: 480
     color: "#252b31"
     border.width: 0
-    property var timerinterval: 100
-    property var t_min: 10
+    property var timerinterval: 20
+    property var t_min: 60  // seconds
 
     state:"LEFT_DRAWER_OPEN"
     states:[
@@ -105,9 +105,9 @@ Rectangle {
             anchors.fill:parent
             onWheel:{
                     if (wheel.angleDelta.y > 0)
-                        t_min /= 2;
+                        t_min = Math.max(t_min/2,5);
                     else
-                        t_min *=2;
+                        t_min = Math.min(t_min*2,7200);
             }
         }
     }
