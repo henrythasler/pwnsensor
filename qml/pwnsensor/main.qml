@@ -8,7 +8,7 @@ Rectangle {
     height: 480
     color: "#252b31"
     border.width: 0
-    property var timerinterval: 20
+    property var timerinterval: 100
     property var t_min: 60  // seconds
 
     state:"LEFT_DRAWER_OPEN"

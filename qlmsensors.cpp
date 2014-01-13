@@ -110,9 +110,10 @@ return true;
 bool QLmSensors::do_sampleValues()
 {
 double val;
+qint64 timestamp = QDateTime().currentDateTime().toMSecsSinceEpoch();
     foreach (QSensorItem* item, m_sensorItems)
         {
-        item->do_sample();
+        item->do_sample(timestamp);
         }
     return true;
 }
@@ -139,11 +140,11 @@ QSensorItem::QSensorItem(QObject *parent) :
 }
 
 
-bool QSensorItem::do_sample()
+bool QSensorItem::do_sample(const qint64 &timestamp)
 {
 double val;
     sensors_get_value(chip, sub->number,&val);
-    m_samples.append(new QSensorSample(QDateTime().currentDateTime().toMSecsSinceEpoch(), (val>32000)?0:(float)val));
+    m_samples.append(new QSensorSample(timestamp, (val>32000)?0:(float)val));
     if(m_samples.size() > max_samples)
         {
         int i=0;

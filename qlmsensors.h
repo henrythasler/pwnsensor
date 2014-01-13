@@ -69,7 +69,7 @@ public:
     QList<QSensorSample*> samples(){return m_samples;};
 
 
-    bool do_sample();
+    bool do_sample(const qint64 &timestamp);
 
     int index;
     const sensors_chip_name *chip;
