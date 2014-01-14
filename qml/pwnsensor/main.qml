@@ -9,7 +9,7 @@ Rectangle {
     color: "#252b31"
     border.width: 0
     property var timerinterval: 100
-    property var t_min: 60  // seconds
+    property var t_min: 600  // seconds
 
     state:"LEFT_DRAWER_OPEN"
     states:[
@@ -54,6 +54,7 @@ Rectangle {
         interval: root.timerinterval;
         running: true;
         repeat: true
+        triggeredOnStart: true
         property var counter:0;
 
         onTriggered:
@@ -62,6 +63,9 @@ Rectangle {
            for(var x=0;x<chart.sensors.items.length;x++)
                 {
                 signals.model.setProperty(x,"value", chart.sensors.items[x].value);
+                signals.model.setProperty(x,"minval", chart.sensors.items[x].minval);
+                signals.model.setProperty(x,"maxval", chart.sensors.items[x].maxval);
+
                 }
            }
        }
@@ -70,7 +74,7 @@ Rectangle {
         id: glow
         anchors.fill: parent
         source: chartTexture
-        radius: 8
+        radius: 6
         samples: 16
         visible: false
     }
@@ -92,8 +96,9 @@ Rectangle {
             for(var x=0;x<chart.sensors.items.length;x++)
                 signals.model.append({"name": chart.sensors.items[x].label,
                                       "value": chart.sensors.items[x].value,
-                                      "itemcolor": chart.sensors.items[x].color
-//                                      "min":
+                                      "itemcolor": chart.sensors.items[x].color,
+                                      "minval": chart.sensors.items[x].minval,
+                                      "maxval": chart.sensors.items[x].maxval
                                      }
                                      );
 
@@ -112,6 +117,11 @@ Rectangle {
         }
     }
 
+    Rectangle{
+        color: "#252b31"
+        width: 10
+        height: parent.height
+    }
 
     Rectangle{
         id: left_drawer
@@ -143,7 +153,7 @@ Rectangle {
         sensors: chart.sensors
         height: root.height
         chart: chart
-        width: 190
+        width: 250
         color:"#66ffffff"
         }
 }

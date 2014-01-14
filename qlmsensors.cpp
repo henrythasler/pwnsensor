@@ -128,11 +128,13 @@ QSensorItem::QSensorItem(QObject *parent) :
     sub=0;
     tmin = tmax = 0;    // visible range in ms
     ymin = ymax = 0;   // min/max value y-axis
+    minval = 32000;
+    maxval = 0;
     label = "none";
     adapter = "none";
     color = "white";
     unit = "none";
-    linewidth = 3.;
+    linewidth = 2.;
     offset = 0.;
     scale = 1.;
     max_samples = 32;
@@ -144,7 +146,13 @@ bool QSensorItem::do_sample(const qint64 &timestamp)
 {
 double val;
     sensors_get_value(chip, sub->number,&val);
-    m_samples.append(new QSensorSample(timestamp, (val>32000)?0:(float)val));
+
+//    val = (val>32000)?0:val;
+
+    if(val<minval) minval=val;
+    if(val>maxval) maxval=val;
+
+    m_samples.append(new QSensorSample(timestamp, (float)val));
     if(m_samples.size() > max_samples)
         {
         int i=0;

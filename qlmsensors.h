@@ -41,8 +41,8 @@ class QSensorItem : public QObject
     Q_OBJECT
     Q_PROPERTY(QString label READ getlabel)
     Q_PROPERTY(float value READ getvalue)
-//    Q_PROPERTY(float minval READ getminvalue)
-//    Q_PROPERTY(float maxval READ getmaxvalue)
+    Q_PROPERTY(float minval READ getminval)
+    Q_PROPERTY(float maxval READ getmaxval)
     Q_PROPERTY(qint64 tmin READ gettmin)
     Q_PROPERTY(qint64 tmax READ gettmax)
     Q_PROPERTY(float ymin READ getymin)
@@ -64,6 +64,9 @@ public:
     void setcolor(const QString &newcol){color=newcol;};
     bool getchecked(){return checked;};
     void setchecked(const bool &newcheck){checked=newcheck;};
+    float getminval(){return minval;};
+    float getmaxval(){return maxval;};
+
 
     QQmlListProperty<QSensorSample> getSamples();
     QList<QSensorSample*> samples(){return m_samples;};

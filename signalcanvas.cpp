@@ -9,79 +9,11 @@ SignalCanvas::SignalCanvas(QQuickItem *parent) :
 
 
     setFlag(ItemHasContents);
-//    setAntialiasing(true);
-
-
-    // 20%-30%, but no AA
-//    setRenderTarget(FramebufferObject);
-//    setPerformanceHint(FastFBOResizing);
 
     timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(timerevt()));
     timer->start(100);
 }
-
-/*
-void SignalCanvas::paint(QPainter *painter)
-{
-    QColor color = QColor((const QString)"white");
-    QPen pen = QPen();
-    int point_cnt=0, samples=0;
-    int s=0;
-    int dx=1;
-    QVector<QPointF> points;
-
-
-//    return;
-
-    qint64 current_timestamp = LmSensors->timestamp();
-
-
-    painter->setRenderHint(QPainter::Antialiasing);
-    painter->setPen(pen);
-
-//    int inter = timer->interval();
-
-
-    dx = MAX(1, float(LmSensors->items().at(0)->tmin)/float(boundingRect().width())/1000.*(1000./(float(timer->interval())))/2.);
-//    dx = 1;
-//    qDebug() << dx;
-
-    for(int x=0; x<LmSensors->items().count(); x++)
-        {
-        if(LmSensors->items().at(x)->checked)
-            {
-            qint64 tmin = LmSensors->items().at(x)->tmin;
-            float scale_y = boundingRect().height() / (LmSensors->items().at(x)->ymax - LmSensors->items().at(x)->ymin);
-            float scale_x = -boundingRect().width() / tmin;
-
-            color.setNamedColor(LmSensors->items().at(x)->color);
-            pen.setColor(color);
-            pen.setWidthF(LmSensors->items().at(x)->linewidth);
-            painter->setPen(pen);
-
-            samples=0;
-
-            for(s=0; s<LmSensors->items().at(x)->samples().count(); s+=dx)
-                {
-                if(LmSensors->items().at(x)->samples().at(s)->time() >= (current_timestamp-tmin))
-                    {
-                    points.append(QPointF((current_timestamp - LmSensors->items().at(x)->samples().at(s)->time() - tmin) * scale_x,
-                                          boundingRect().height()-(LmSensors->items().at(x)->samples().at(s)->value() - LmSensors->items().at(x)->ymin) * scale_y )
-                                         );
-                    samples++;
-                    }
-                }
-            painter->drawPolyline(points.data()+point_cnt, points.length()-point_cnt);
-
-            point_cnt+=samples;
-            }
-//        points.clear();
-        }
-
-//    painter->drawRoundedRect(0, 0, boundingRect().width(), boundingRect().height(), 20, 20);
-}
-*/
 
 
 QSGNode *SignalCanvas::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *)
@@ -114,14 +46,14 @@ QSGNode *SignalCanvas::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *)
 
     }
     else {
-        qint64 timestamp=LmSensors->timestamp();
+//        qint64 timestamp=LmSensors->timestamp();
 
         if(rect != old_rect)
             root->grid->updateGeometry(rect.adjusted(10,10,-10,-10));
 
         for(int i=0; i<LmSensors->items().count();i++)
             {
-            root->lines.at(i)->setTimestamp(timestamp);
+            root->lines.at(i)->setTimestamp(m_timestamp);
             LmSensors->items().at(i)->tmin = m_tmin*1000;
             root->lines.at(i)->updateGeometry(rect.adjusted(10,10,-10,-10));
             }
@@ -134,11 +66,12 @@ QSGNode *SignalCanvas::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *)
 
 void SignalCanvas::timerevt()
 {
-    counter++;
-    LmSensors->do_sampleValues();
+    m_timestamp=LmSensors->timestamp();
+//    if(!(counter%10))
+        LmSensors->do_sampleValues();
     if(!(counter%50)) qDebug() << LmSensors->items().at(0)->samples().count();
     update();
-
+    counter++;
 }
 
 
@@ -206,11 +139,11 @@ void LineNode::updateGeometry(const QRectF &bounds)
         {
         int first_sample,last_sample;
 
-        for(int x=0;x<m_sensor->samples().count();x++)
+        for(int x=1;x<m_sensor->samples().count();x++)
             {
             if(m_sensor->samples().at(x)->time() >= (m_timestamp-m_sensor->tmin))
                 {
-                first_sample = x;
+                first_sample = x-1;
                 break;
                 }
             }
@@ -258,10 +191,10 @@ void LineNode::updateGeometry(const QRectF &bounds)
             d = end-(offset*normal);
             b = start-(offset*normal);
 
-            vertices[v++].set(a.x(),a.y());
-            vertices[v++].set(b.x(),b.y());
-            vertices[v++].set(c.x(),c.y());
-            vertices[v++].set(d.x(),d.y());
+            vertices[v++].set(a.x(),int(a.y()));
+            vertices[v++].set(b.x(),int(b.y()));
+            vertices[v++].set(c.x(),int(c.y()));
+            vertices[v++].set(d.x(),int(d.y()));
 
             start = end;
             }

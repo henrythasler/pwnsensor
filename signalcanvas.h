@@ -80,5 +80,7 @@ private:
     QRectF old_rect;
 
     qint64 m_tmin;
+    qint64 m_timestamp;
+
 };
 #endif // SIGNALCANVAS_H

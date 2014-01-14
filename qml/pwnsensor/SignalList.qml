@@ -84,7 +84,9 @@ Rectangle {
                     }
                 }
                 Text { width:100; text: '<b>'+name+'</b>'; clip:true}
-                Text { width:40; text: '<i>'+((Math.abs(value)<10)?value.toFixed(2):((Math.abs(value)<24)?value.toFixed(1):value.toFixed()))+'</i>'; clip:true}
+                Text { width:30; text: '<i>'+((value ==0)?0:(Math.abs(value )<10)?value.toFixed(2):((Math.abs(value)<24)?value.toFixed(1):value.toFixed()))+'</i>'; clip:true}
+                Text { width:30; text: '<i>'+((minval==0)?0:(Math.abs(minval)<10)?minval.toFixed(2):((Math.abs(minval)<24)?minval.toFixed(1):minval.toFixed()))+'</i>'; clip:true}
+                Text { width:30; text: '<i>'+((maxval==0)?0:(Math.abs(maxval)<10)?maxval.toFixed(2):((Math.abs(maxval)<24)?maxval.toFixed(1):maxval.toFixed()))+'</i>'; clip:true}
             }
         }
     }
@@ -119,6 +121,15 @@ Rectangle {
                     width: parent.width
                     height: 16
                     opacity: 0.3
+                    Row {
+                        spacing: 5
+                        Rectangle { width:40; height: 5; opacity: 0}
+                        Text { width:100; text: 'Name'; clip:true}
+                        Text { width:30; text: 'Val'; clip:true}
+                        Text { width:30; text: 'Min'; clip:true}
+                        Text { width:30; text: 'Max'; clip:true}
+                        }
+
                 }
 
         Scrollbar {
