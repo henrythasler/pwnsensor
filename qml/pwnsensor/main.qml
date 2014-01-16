@@ -113,6 +113,7 @@ Rectangle {
                         t_min = Math.max(t_min/2,5);
                     else
                         t_min = Math.min(t_min*2,7200);
+                    chart.update();
             }
         }
     }
