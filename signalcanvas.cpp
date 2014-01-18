@@ -139,6 +139,9 @@ void LineNode::updateGeometry(const QRectF &bounds)
         {
         int first_sample,last_sample;
 
+//        int dx = MAX(1, float(m_sensor->tmin)/float(bounds.width())/1000.*(1000./(float(m_sensor->samples().at(1)->time()-m_sensor->samples().at(0)->time())))/2.);
+//        qDebug() << dx;
+
         for(int x=1;x<m_sensor->samples().count();x++)
             {
             if(m_sensor->samples().at(x)->time() >= (m_timestamp-m_sensor->tmin))
@@ -149,7 +152,7 @@ void LineNode::updateGeometry(const QRectF &bounds)
             }
 
         last_sample = m_sensor->samples().count()-1;
-//        first_sample = 0;
+        first_sample = 0;
 
         m_geometry->allocate(MAX(last_sample-first_sample, 0)*4);
         QSGGeometry::Point2D *vertices = m_geometry->vertexDataAsPoint2D();

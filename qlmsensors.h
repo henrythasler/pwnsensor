@@ -63,7 +63,7 @@ public:
     QString getcolor(){return color;};
     void setcolor(const QString &newcol){color=newcol;};
     bool getchecked(){return checked;};
-    void setchecked(const bool &newcheck){checked=newcheck;};
+    void setchecked(const bool &newcheck){if(checked!=newcheck) {checked=newcheck;emit checkChanged();} };
     float getminval(){return minval;};
     float getmaxval(){return maxval;};
 

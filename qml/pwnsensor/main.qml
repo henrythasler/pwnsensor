@@ -9,7 +9,7 @@ Rectangle {
     color: "#252b31"
     border.width: 0
     property var timerinterval: 100
-    property var t_min: 600  // seconds
+    property var t_min: 60  // seconds
 
     state:"LEFT_DRAWER_OPEN"
     states:[
@@ -94,13 +94,14 @@ Rectangle {
         function init(){
 
             for(var x=0;x<chart.sensors.items.length;x++)
-                signals.model.append({"name": chart.sensors.items[x].label,
+                signals.model.append({"name": "<b>"+chart.sensors.items[x].label+"</b>",
                                       "value": chart.sensors.items[x].value,
                                       "itemcolor": chart.sensors.items[x].color,
                                       "minval": chart.sensors.items[x].minval,
                                       "maxval": chart.sensors.items[x].maxval
                                      }
                                      );
+            signals.columnWidths = ColumnHelper.calcColumnWidths(signals.model, root);
 
         }
         Component.onCompleted: init();
@@ -149,12 +150,13 @@ Rectangle {
         }
     }
 
+
     SignalList{
         id:signals
         sensors: chart.sensors
         height: root.height
         chart: chart
         width: 250
-        color:"#66ffffff"
-        }
+        color:"#bb252b31"
+    }
 }
