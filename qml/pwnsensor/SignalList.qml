@@ -46,6 +46,7 @@ Rectangle {
         Item{
             id: itemcontainer
             width: list.width; height: 16
+            clip: true
 
             ColorDialog {
                 id: colorDialog
@@ -133,9 +134,9 @@ Rectangle {
                 transformOrigin: Item.TopLeft
                 rotation: 90
                 gradient: Gradient {
-//                    GradientStop { position: 0.0; color: "#00ff7700" }
+//                    GradientStop { position: 0.0; color: "#00ffa500" }
                     GradientStop { position: 0.0; color: "orange" }
-                    GradientStop { position: 1.0; color: "#00ff7700" }
+                    GradientStop { position: 1.0; color: "#00ffa500" }
                 }
             }
 
@@ -199,6 +200,7 @@ Rectangle {
         Scrollbar {
             flickable: list
             vertical: true
+            color: "white"
         }
     }
 }
