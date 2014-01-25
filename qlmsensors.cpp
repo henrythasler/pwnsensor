@@ -138,7 +138,7 @@ QSensorItem::QSensorItem(QObject *parent) :
     offset = 0.;
     scale = 1.;
     max_samples = 32;
-    checked = true;
+    checked = false;
 }
 
 
@@ -153,6 +153,8 @@ double val;
     if(val>maxval) maxval=val;
 
     m_samples.append(new QSensorSample(timestamp, (float)val));
+    emit valueChanged();
+
     if(m_samples.size() > max_samples)
         {
         int i=0;

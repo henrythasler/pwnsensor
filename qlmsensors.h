@@ -40,7 +40,7 @@ class QSensorItem : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QString label READ getlabel)
-    Q_PROPERTY(float value READ getvalue)
+    Q_PROPERTY(float value READ getvalue NOTIFY valueChanged)
     Q_PROPERTY(float minval READ getminval)
     Q_PROPERTY(float maxval READ getmaxval)
     Q_PROPERTY(qint64 tmin READ gettmin)
@@ -49,7 +49,7 @@ class QSensorItem : public QObject
     Q_PROPERTY(float ymax READ getymax)
     Q_PROPERTY(QString color READ getcolor WRITE setcolor NOTIFY colorChanged)
     Q_PROPERTY(bool checked READ getchecked WRITE setchecked NOTIFY checkChanged)
-    Q_PROPERTY(QQmlListProperty<QSensorSample> samples READ getSamples NOTIFY updateSamples)
+    Q_PROPERTY(QQmlListProperty<QSensorSample> samples READ getSamples CONSTANT)
 
 public:
     explicit QSensorItem(QObject *parent = 0);
@@ -91,9 +91,10 @@ public:
     bool checked;
 
 signals:
-    void updateSamples();
+//    void updateSamples();
     void checkChanged();
     void colorChanged();
+    void valueChanged();
 
 public slots:
 

@@ -18,14 +18,14 @@ Rectangle {
             name: "LEFT_DRAWER_OPEN"
             PropertyChanges { target: signals; x:0}
             PropertyChanges { target: left_drawer; x:signals.width + left_drag.width + 2}
-            PropertyChanges { target: left_drag; visible:true}
+            PropertyChanges { target: left_drag; opacity:1; enabled: true}
 //            PropertyChanges { target: chart; x:signals.width; width:root.width-signals.width}
               },
         State {
             name: "LEFT_DRAWER_CLOSED"
             PropertyChanges { target: signals; x:-signals.width-left_drag.width}
             PropertyChanges { target: left_drawer; x:2}
-            PropertyChanges { target: left_drag; visible:false}
+            PropertyChanges { target: left_drag; opacity:0; enabled: false}
 //            PropertyChanges { target: chart; x:0; width:root.width}
               }
            ]
@@ -35,7 +35,7 @@ Rectangle {
             to: "*"
             NumberAnimation { target: left_drawer; properties: "x"; duration: 500; easing.type:Easing.OutExpo }
             NumberAnimation { target: signals; properties: "x"; duration: 500; easing.type: Easing.OutExpo }
-//            NumberAnimation { target: left_drag; properties: "visible"; duration: 500; easing.type: Easing.Linear }
+            NumberAnimation { target: left_drag; properties: "opacity"; duration: 500; easing.type: Easing.Linear }
 //            NumberAnimation { target: chart; properties: "x, width"; duration: 500; easing.type: Easing.OutExpo }
         }
     ]
@@ -126,6 +126,31 @@ Rectangle {
         width: 10
         height: parent.height
     }
+
+
+    Rectangle {
+        id: cursor
+        x: root.width-10
+        width: 2; height: signals.height
+        color: "#aaa5a5a5"
+
+        Text{
+            anchors.centerIn: parent
+            text: chart.sensors.items[signals.selected_item].samples[1].value
+            color: "white"
+        }
+
+        MouseArea {
+            cursorShape: Qt.SizeHorCursor;
+            width:12; height: parent.height;
+            anchors.centerIn: parent
+            drag.target: cursor
+            drag.axis: Drag.XAxis
+            drag.minimumX: 10
+            drag.maximumX: root.width-10
+        }
+    }
+
 
 
     Rectangle {

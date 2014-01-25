@@ -23,7 +23,7 @@ int main(int argc, char *argv[])
     format.setSamples(16);
     viewer.setFormat(format);
 
-    viewer.setTitle("pwnsensor QQuickItem");
+    viewer.setTitle("pwnsensor alpha-3");
     viewer.setMainQmlFile(QStringLiteral("qml/pwnsensor/main.qml"));
     viewer.showExpanded();
 
