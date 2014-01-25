@@ -30,10 +30,11 @@ QSGNode *SignalCanvas::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *)
 
     if (!root) {
         root = new RootNode();
+//        qDebug() << rect;
 
         root->grid = new GridNode();
         root->appendChildNode(root->grid);
-        root->grid->updateGeometry(rect.adjusted(10,10,-10,-10));
+        root->grid->updateGeometry(rect);
 
         for(int i=0; i<LmSensors->items().count();i++)
             {
@@ -41,7 +42,7 @@ QSGNode *SignalCanvas::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *)
 
             root->appendChildNode(root->lines.at(i));
             root->lines.at(i)->setTimestamp(LmSensors->timestamp());
-            root->lines.at(i)->updateGeometry(rect.adjusted(10,10,-10,-10));
+            root->lines.at(i)->updateGeometry(rect);
             }
 
     }
@@ -49,13 +50,13 @@ QSGNode *SignalCanvas::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *)
 //        qint64 timestamp=LmSensors->timestamp();
 
         if(rect != old_rect)
-            root->grid->updateGeometry(rect.adjusted(10,10,-10,-10));
+            root->grid->updateGeometry(rect);
 
         for(int i=0; i<LmSensors->items().count();i++)
             {
             root->lines.at(i)->setTimestamp(m_timestamp);
             LmSensors->items().at(i)->tmin = m_tmin*1000;
-            root->lines.at(i)->updateGeometry(rect.adjusted(10,10,-10,-10));
+            root->lines.at(i)->updateGeometry(rect);
             }
         }
 
@@ -69,7 +70,7 @@ void SignalCanvas::timerevt()
     m_timestamp=LmSensors->timestamp();
 //    if(!(counter%10))
         LmSensors->do_sampleValues();
-    if(!(counter%50)) qDebug() << LmSensors->items().at(0)->samples().count();
+//    if(!(counter%50)) qDebug() << LmSensors->items().at(0)->samples().count();
     update();
     counter++;
 }
@@ -100,16 +101,19 @@ void GridNode::updateGeometry(const QRectF &bounds)
     m_geometry->allocate((nx+1)*(ny+1)*2);
     QSGGeometry::Point2D *vertices = m_geometry->vertexDataAsPoint2D();
 
+//    qDebug() << bounds;
+
+
     for(int x=0; x<=nx;x++)
         {
-        vertices[cnt++].set(int(bounds.topLeft().x()+bounds.width()/nx*x)+0.5, int(bounds.topLeft().y())+0.5);
-        vertices[cnt++].set(int(bounds.bottomLeft().x()+bounds.width()/nx*x)+0.5, int(bounds.bottomLeft().y())+0.5);
+        vertices[cnt++].set(int(bounds.topLeft().x()+(bounds.width()-1)/nx*x)+0.5, int(bounds.topLeft().y())+0.5);
+        vertices[cnt++].set(int(bounds.bottomLeft().x()+(bounds.width()-1)/nx*x)+0.5, int(bounds.bottomLeft().y())+0.5);
         }
 
     for(int y=0; y<=ny;y++)
         {
-        vertices[cnt++].set(int(bounds.topRight().x())+0.5, int(bounds.topRight().y()+bounds.height()/ny*y)+0.5);
-        vertices[cnt++].set(int(bounds.topLeft().x())+0.5, int(bounds.topLeft().y()+bounds.height()/ny*y)+0.5);
+        vertices[cnt++].set(int(bounds.topRight().x())+0.5, int(bounds.topRight().y()+(bounds.height()-1)/ny*y)+0.5);
+        vertices[cnt++].set(int(bounds.topLeft().x())+0.5, int(bounds.topLeft().y()+(bounds.height()-1)/ny*y)+0.5);
         }
     markDirty(QSGNode::DirtyGeometry);
 }

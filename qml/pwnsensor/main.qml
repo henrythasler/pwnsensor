@@ -69,74 +69,96 @@ Rectangle {
                 signals.model.setProperty(x,"value", chart.sensors.items[x].value);
                 signals.model.setProperty(x,"minval", chart.sensors.items[x].minval);
                 signals.model.setProperty(x,"maxval", chart.sensors.items[x].maxval);
-
                 }
+
+//           x = bounds.left()+(m_timestamp - m_sensor->samples().at(s)->time() - tmin) * scale_x
+           var ctime = (cursor.x-chart_container.x)/-chart_container.width * chart.sensors.items[0].tmin - chart.sensors.timestamp + chart.sensors.items[0].tmin;
+//            console.log(chart.sensors.timestamp/1000 + "  " + -ctime/1000);
+
+           cursorvalue.text = chart.sensors.items[signals.selected_item].valueAt(-ctime).toFixed(2);
+
            }
        }
 
-    GaussianBlur {
-        id: glow
-        anchors.fill: parent
-        source: chartTexture
-        radius: 6
-        samples: 16
-        visible: false
-    }
 
-    ShaderEffectSource {
-        id: chartTexture
-        anchors.fill: parent
-        sourceItem: chart
-        hideSource: true
-    }
+    Item{
+        id: chart_container
+        x:10
+        y:10
+        width: parent.width-2*x
+        height: parent.height-2*y
+        clip: true
 
-    SignalCanvas{
-        id: chart
-        anchors.fill: parent
-        interval: timerinterval
-        tmin: t_min
-        function init(){
+//        GaussianBlur {
+//            id: glow
+//            anchors.fill: parent
+//            source: chartTexture
+//            radius: 6
+//            samples: 16
+//            visible: false
+//        }
 
-            for(var x=0;x<chart.sensors.items.length;x++)
-                signals.model.append({"name": "<b>"+chart.sensors.items[x].label+"</b>",
-                                      "value": chart.sensors.items[x].value,
-                                      "itemcolor": chart.sensors.items[x].color,
-                                      "minval": chart.sensors.items[x].minval,
-                                      "maxval": chart.sensors.items[x].maxval
-                                     }
-                                     );
-        }
-        Component.onCompleted: init();
+//        ShaderEffectSource {
+//            id: chartTexture
+//            anchors.fill: parent
+//            sourceItem: chart
+//            hideSource: true
+//        }
 
-        MouseArea{
-            id: zoomarea
-            anchors.fill:parent
-            onWheel:{
-                    if (wheel.angleDelta.y > 0)
-                        t_min = Math.max(t_min/2,5);
-                    else
-                        t_min = Math.min(t_min*2,7200);
-                    chart.update();
+        SignalCanvas{
+            id: chart
+            anchors.fill: parent
+            interval: timerinterval
+            tmin: t_min
+
+            function init(){
+
+                for(var x=0;x<chart.sensors.items.length;x++)
+                    signals.model.append({"name": "<b>"+chart.sensors.items[x].label+"</b>",
+                                          "value": chart.sensors.items[x].value,
+                                          "itemcolor": chart.sensors.items[x].color,
+                                          "minval": chart.sensors.items[x].minval,
+                                          "maxval": chart.sensors.items[x].maxval,
+                                          "unit": chart.sensors.items[x].unit
+                                         }
+                                         );
+            }
+            Component.onCompleted: init();
+
+            MouseArea{
+                id: zoomarea
+                anchors.fill:parent
+                onWheel:{
+                        if (wheel.angleDelta.y > 0)
+                            t_min = Math.max(t_min/2,5);
+                        else
+                            t_min = Math.min(t_min*2,7200);
+                        chart.update();
+                }
             }
         }
     }
 
-    Rectangle{
-        color: "#252b31"
-        width: 10
-        height: parent.height
-    }
+//    Rectangle{
+//        color: "#252b31"
+//        width: 10
+//        height: parent.height
+//    }
 
 
     Rectangle {
         id: cursor
-        x: root.width-10
+        x: root.width-chart_container.x-1
         width: 2; height: signals.height
+//        color: "white"
         color: "#aaa5a5a5"
+//        visible: false
 
         Text{
-            anchors.centerIn: parent
-            text: chart.sensors.items[signals.selected_item].samples[1].value
+            id: cursorvalue
+//            anchors.centerIn: parent
+            anchors.horizontalCenter: cursor.horizontalCenter
+            anchors.bottom: parent.bottom
             color: "white"
         }
 
@@ -146,8 +168,8 @@ Rectangle {
             anchors.centerIn: parent
             drag.target: cursor
             drag.axis: Drag.XAxis
-            drag.minimumX: 10
-            drag.maximumX: root.width-10
+            drag.minimumX: chart_container.x
+            drag.maximumX: root.width-chart_container.x-1
         }
     }
 
@@ -175,8 +197,6 @@ Rectangle {
         x:left_drag.width + 2
         y:2
         width: 24
-//        height: parent.height
-//        y: parent.height/2-50
         height: 21
         radius: 4
 

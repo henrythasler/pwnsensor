@@ -73,6 +73,7 @@ else
 
             sub = sensors_get_subfeature(chip, feature, (sensors_subfeature_type)(((int)feature->type) << 8));
 
+            new_item->type = new_item->LM;
             new_item->index = m_sensorItems.count();
             new_item->label = sensors_get_label(chip, feature);
             if(adap) new_item->adapter = adap;
@@ -85,15 +86,38 @@ else
 
             switch(new_item->feature->type)
                 {
+                case SENSORS_FEATURE_IN:
+                case SENSORS_FEATURE_VID:
+                        new_item->ymin=0;
+                        new_item->ymax=6;
+                        new_item->unit = "V";
+                        break;
                 case SENSORS_FEATURE_FAN:
                         new_item->ymin=300;
                         new_item->ymax=1200;
                         new_item->checked=true;
+                        new_item->unit = "1/min";
                         break;
-                default:
+                case SENSORS_FEATURE_TEMP:
+                        new_item->unit = "°C";
+                        break;
+                case SENSORS_FEATURE_POWER:
+                        new_item->unit = "W";
+                        break;
+                case SENSORS_FEATURE_ENERGY:
+                        new_item->unit = "J";
+                        break;
+                case SENSORS_FEATURE_CURR:
+                        new_item->unit = "A";
+                        break;
+                case SENSORS_FEATURE_HUMIDITY:
+                        new_item->unit = "%";
+                        break;
+                case SENSORS_FEATURE_INTRUSION:
                         new_item->ymin=0;
-                        new_item->ymax=100;
+                        new_item->ymax=12;
                         break;
+                 default:;
                 }
 
 //            if(new_item->index == 0) new_item->checked=true;
@@ -109,7 +133,6 @@ return true;
 
 bool QLmSensors::do_sampleValues()
 {
-double val;
 qint64 timestamp = QDateTime().currentDateTime().toMSecsSinceEpoch();
     foreach (QSensorItem* item, m_sensorItems)
         {
@@ -123,17 +146,19 @@ QSensorItem::QSensorItem(QObject *parent) :
     QObject(parent)
 {
     index=-1;
+    type=CPU;
     chip=0;
     feature=0;
     sub=0;
     tmin = tmax = 0;    // visible range in ms
-    ymin = ymax = 0;   // min/max value y-axis
+    ymin = 0;
+    ymax = 100;
     minval = 32000;
     maxval = 0;
     label = "none";
     adapter = "none";
     color = "white";
-    unit = "none";
+    unit = "";
     linewidth = 2.;
     offset = 0.;
     scale = 1.;
@@ -145,7 +170,13 @@ QSensorItem::QSensorItem(QObject *parent) :
 bool QSensorItem::do_sample(const qint64 &timestamp)
 {
 double val;
-    sensors_get_value(chip, sub->number,&val);
+
+    switch(type)
+        {
+        case LM: sensors_get_value(chip, sub->number,&val); break;
+        case CPU: break;
+        default: val=0;
+        }
 
 //    val = (val>32000)?0:val;
 
@@ -167,6 +198,14 @@ double val;
             }
         }
     return true;
+}
+
+
+float QSensorItem::valueAt(const qint64 &timestamp)
+{
+    for(int x=0;x<m_samples.size();x++)
+        if(m_samples.at(x)->time()>=timestamp) return m_samples.at(x)->value();
+    return 0;
 }
 
 

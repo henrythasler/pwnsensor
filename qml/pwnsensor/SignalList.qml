@@ -115,7 +115,7 @@ Rectangle {
                     }
                 }
                 Text { color:"#eeeeee"; text: name; clip:true}
-                Text { color:"#eeeeee"; text: '| '+((value ==0)?0:(Math.abs(value )<10)?value.toFixed(2):((Math.abs(value)<24)?value.toFixed(1):value.toFixed()))+''; clip:true}
+                Text { color:"#eeeeee"; text: '| '+((value ==0)?0:(Math.abs(value )<10)?value.toFixed(2):((Math.abs(value)<24)?value.toFixed(1):value.toFixed()))+' '+unit; clip:true}
             }
         }
     }

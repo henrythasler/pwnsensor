@@ -40,6 +40,7 @@ class QSensorItem : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QString label READ getlabel)
+    Q_PROPERTY(QString unit READ getunit)
     Q_PROPERTY(float value READ getvalue NOTIFY valueChanged)
     Q_PROPERTY(float minval READ getminval)
     Q_PROPERTY(float maxval READ getmaxval)
@@ -54,7 +55,10 @@ class QSensorItem : public QObject
 public:
     explicit QSensorItem(QObject *parent = 0);
 
+    Q_INVOKABLE float valueAt(const qint64 &timestamp);
+
     QString getlabel(){return label;};
+    QString getunit(){return unit;};
     float getvalue();
     qint64 gettmin(){return tmin;};
     qint64 gettmax(){return tmax;};
@@ -75,6 +79,8 @@ public:
     bool do_sample(const qint64 &timestamp);
 
     int index;
+    enum SensorType { CPU, LM };
+    SensorType type;
     const sensors_chip_name *chip;
     const sensors_feature *feature;
     const sensors_subfeature *sub;
@@ -100,6 +106,7 @@ public slots:
 
 private:
     QList<QSensorSample*> m_samples;
+
 };
 
 
@@ -140,7 +147,6 @@ private:
 
     QString m_errorMessage;
     bool m_initialized;
-
 };
 
 #endif // QLMSENSORS_H
