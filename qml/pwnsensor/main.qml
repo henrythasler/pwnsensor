@@ -1,6 +1,8 @@
 import QtQuick 2.0
 import QtGraphicalEffects 1.0
 import sensors 1.0
+import QtQuick.LocalStorage 2.0
+import "storage.js" as Storage
 
 Rectangle {
     id: root
@@ -8,23 +10,45 @@ Rectangle {
     height: 480
     color: "#252b31"
     border.width: 0
-    property var timerinterval: 100
+    property var timerinterval: 1000
     property var t_min: 60  // seconds
-    property var left_drawer_width: 250
+
+    Component.onCompleted: {
+//        Storage.clear();
+        Storage.initialize();
+//        Storage.setSetting("mySetting","myValue");
+        left_drag.x = Storage.getSetting("left_drawer_width")
+    }
+    Component.onDestruction: {
+        Storage.setSetting("left_drawer_width",left_drag.x);
+    }
 
     state:"LEFT_DRAWER_OPEN"
     states:[
         State {
             name: "LEFT_DRAWER_OPEN"
             PropertyChanges { target: signals; x:0}
+            PropertyChanges { target: settings_drawer; x:2; opacity:0; enabled: false}
             PropertyChanges { target: left_drawer; x:signals.width + left_drag.width + 2}
+            PropertyChanges { target: settings; x:-settings.width}
             PropertyChanges { target: left_drag; opacity:1; enabled: true}
+//            PropertyChanges { target: chart; x:signals.width; width:root.width-signals.width}
+              },
+        State {
+            name: "SETTINGS_DRAWER_OPEN"
+            PropertyChanges { target: signals; x:-signals.width-left_drag.width}
+            PropertyChanges { target: left_drawer; x:2; opacity:0; enabled: false}
+            PropertyChanges { target: settings_drawer; x:settings.width+2}
+            PropertyChanges { target: settings; x:0}
+            PropertyChanges { target: left_drag; opacity:0; enabled: false}
 //            PropertyChanges { target: chart; x:signals.width; width:root.width-signals.width}
               },
         State {
             name: "LEFT_DRAWER_CLOSED"
             PropertyChanges { target: signals; x:-signals.width-left_drag.width}
             PropertyChanges { target: left_drawer; x:2}
+            PropertyChanges { target: settings_drawer; x:2}
+            PropertyChanges { target: settings; x:-settings.width}
             PropertyChanges { target: left_drag; opacity:0; enabled: false}
 //            PropertyChanges { target: chart; x:0; width:root.width}
               }
@@ -34,7 +58,11 @@ Rectangle {
         Transition {
             to: "*"
             NumberAnimation { target: left_drawer; properties: "x"; duration: 500; easing.type:Easing.OutExpo }
+            NumberAnimation { target: left_drawer; properties: "opacity"; duration: 500; easing.type: Easing.Linear }
+            NumberAnimation { target: settings_drawer; properties: "x"; duration: 500; easing.type:Easing.OutExpo }
+            NumberAnimation { target: settings_drawer; properties: "opacity"; duration: 500; easing.type: Easing.Linear }
             NumberAnimation { target: signals; properties: "x"; duration: 500; easing.type: Easing.OutExpo }
+            NumberAnimation { target: settings; properties: "x"; duration: 500; easing.type: Easing.OutExpo }
             NumberAnimation { target: left_drag; properties: "opacity"; duration: 500; easing.type: Easing.Linear }
 //            NumberAnimation { target: chart; properties: "x, width"; duration: 500; easing.type: Easing.OutExpo }
         }
@@ -55,7 +83,7 @@ Rectangle {
 
     Timer {
         id:maintimer
-        interval: root.timerinterval;
+        interval: settings.refresh_rate;
         running: true;
         repeat: true
         triggeredOnStart: true
@@ -63,6 +91,7 @@ Rectangle {
 
         onTriggered:
            {
+//           console.log(settings.rate);
            counter++;
            for(var x=0;x<chart.sensors.items.length;x++)
                 {
@@ -108,7 +137,6 @@ Rectangle {
         SignalCanvas{
             id: chart
             anchors.fill: parent
-            interval: timerinterval
             tmin: t_min
 
             function init(){
@@ -177,7 +205,7 @@ Rectangle {
 
     Rectangle {
         id: left_drag
-        x: left_drawer_width;
+        x: 250;
         width: 2; height: signals.height
         color: "#aaffa500"
 
@@ -193,7 +221,7 @@ Rectangle {
 
     Rectangle{
         id: left_drawer
-        color: "#44ffffff"
+        color: (leftdrawerMouseArea.containsMouse)?"#88ffffff":"#44ffffff"
         x:left_drag.width + 2
         y:2
         width: 24
@@ -211,6 +239,7 @@ Rectangle {
 
         MouseArea{
             id: leftdrawerMouseArea
+            hoverEnabled: true
             anchors.fill:parent
             onClicked:{
                 if (root.state == "LEFT_DRAWER_CLOSED"){
@@ -223,6 +252,31 @@ Rectangle {
         }
     }
 
+    Rectangle{
+        id: settings_drawer
+        color: (settingsdrawerMouseArea.containsMouse)?"#88ffffff":"#44ffffff"
+        x:settings.width + 2
+        y:25
+        width: 24
+        height: 21
+        radius: 4
+
+        Text{text:"settings"; color:"white"}
+
+        MouseArea{
+            id: settingsdrawerMouseArea
+            hoverEnabled: true
+            anchors.fill:parent
+            onClicked:{
+                if (root.state == "LEFT_DRAWER_CLOSED"){
+                    root.state = "SETTINGS_DRAWER_OPEN"
+                }
+                else if (root.state == "SETTINGS_DRAWER_OPEN"){
+                    root.state = "LEFT_DRAWER_CLOSED"
+                }
+            }
+        }
+    }
 
     SignalList{
         id:signals
@@ -232,4 +286,14 @@ Rectangle {
         width: left_drag.x
         color:"#bb252b31"
     } 
+
+    Settings{
+        id:settings
+        sensors: chart.sensors
+//        rate: root.timerinterval
+        chart: chart
+        width:160
+        height: root.height
+        color:"#bb252b31"
+    }
 }

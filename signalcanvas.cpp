@@ -10,9 +10,13 @@ SignalCanvas::SignalCanvas(QQuickItem *parent) :
 
     setFlag(ItemHasContents);
 
+    m_samplerate = 100;
+    m_refreshrate = 100;
+
+    timerinterval = 100;
     timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(timerevt()));
-    timer->start(100);
+    timer->start(timerinterval);
 }
 
 
@@ -68,10 +72,12 @@ QSGNode *SignalCanvas::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *)
 void SignalCanvas::timerevt()
 {
     m_timestamp=LmSensors->timestamp();
-//    if(!(counter%10))
-        LmSensors->do_sampleValues();
+
+    if(!(counter%(m_samplerate/timerinterval))) LmSensors->do_sampleValues();
+
+    if(!(counter%(m_refreshrate/timerinterval))) update();
+
 //    if(!(counter%50)) qDebug() << LmSensors->items().at(0)->samples().count();
-    update();
     counter++;
 }
 

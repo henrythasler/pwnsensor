@@ -47,7 +47,8 @@ public:
 class SignalCanvas : public QQuickItem
 {
     Q_OBJECT
-    Q_PROPERTY(int interval READ interval WRITE setinterval)
+    Q_PROPERTY(int samplerate READ samplerate WRITE setsamplerate NOTIFY samplerateChanged)
+    Q_PROPERTY(int refreshrate READ refreshrate WRITE setrefreshrate NOTIFY refreshrateChanged)
     Q_PROPERTY(int tmin READ tmin WRITE settmin)
     Q_PROPERTY(QLmSensors* sensors READ getSensors CONSTANT)
 
@@ -55,8 +56,11 @@ public:
     explicit SignalCanvas(QQuickItem *parent = 0);
     QSGNode *updatePaintNode(QSGNode *node, UpdatePaintNodeData *);
 
-    int interval(){return timer->interval();};
-    void setinterval(int val){timer->setInterval(val);};
+    int samplerate(){return m_samplerate;};
+    void setsamplerate(int val){m_samplerate=val;};
+
+    int refreshrate(){return m_refreshrate;};
+    void setrefreshrate(int val){m_refreshrate=val;};
 
     int tmin(){return m_tmin;};
     void settmin(int val){m_tmin=val;};
@@ -65,6 +69,8 @@ public:
     QTimer *timer;
 
 signals:
+    void samplerateChanged();
+    void refreshrateChanged();
 
 public slots:
     void timerevt();
@@ -81,6 +87,9 @@ private:
 
     qint64 m_tmin;
     qint64 m_timestamp;
+    int m_refreshrate;
+    int m_samplerate;
+    int timerinterval;
 
 };
 #endif // SIGNALCANVAS_H

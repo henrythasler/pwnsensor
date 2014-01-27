@@ -46,8 +46,10 @@ class QSensorItem : public QObject
     Q_PROPERTY(float maxval READ getmaxval)
     Q_PROPERTY(qint64 tmin READ gettmin)
     Q_PROPERTY(qint64 tmax READ gettmax)
+    Q_PROPERTY(qint32 max_samples READ getmax_samples CONSTANT)
     Q_PROPERTY(float ymin READ getymin)
     Q_PROPERTY(float ymax READ getymax)
+    Q_PROPERTY(float width READ getwidth WRITE setwidth NOTIFY widthChanged)
     Q_PROPERTY(QString color READ getcolor WRITE setcolor NOTIFY colorChanged)
     Q_PROPERTY(bool checked READ getchecked WRITE setchecked NOTIFY checkChanged)
     Q_PROPERTY(QQmlListProperty<QSensorSample> samples READ getSamples CONSTANT)
@@ -62,10 +64,13 @@ public:
     float getvalue();
     qint64 gettmin(){return tmin;};
     qint64 gettmax(){return tmax;};
+    qint64 getmax_samples(){return max_samples;};
     float getymin(){return ymin;};
     float getymax(){return ymax;};
     QString getcolor(){return color;};
     void setcolor(const QString &newcol){color=newcol;};
+    float getwidth(){return linewidth;};
+    void setwidth(const float &newwidth){linewidth=newwidth;};
     bool getchecked(){return checked;};
     void setchecked(const bool &newcheck){if(checked!=newcheck) {checked=newcheck;emit checkChanged();} };
     float getminval(){return minval;};
@@ -101,6 +106,7 @@ signals:
     void checkChanged();
     void colorChanged();
     void valueChanged();
+    void widthChanged();
 
 public slots:
 

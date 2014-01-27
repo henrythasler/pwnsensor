@@ -26,6 +26,8 @@ LIBS += -lsensors
 
 OTHER_FILES += \
     qml/pwnsensor/SignalList.qml \
-    qml/pwnsensor/Scrollbar.qml
+    qml/pwnsensor/Scrollbar.qml \
+    qml/pwnsensor/Settings.qml \
+    qml/pwnsensor/storage.js
 
 RESOURCES +=
