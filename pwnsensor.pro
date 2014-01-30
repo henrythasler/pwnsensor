@@ -20,14 +20,15 @@ qtcAddDeployment()
 
 HEADERS += \
     signalcanvas.h \
-    qlmsensors.h
+    qlmsensors.h \
+    settings.h
 
 LIBS += -lsensors
 
 OTHER_FILES += \
     qml/pwnsensor/SignalList.qml \
     qml/pwnsensor/Scrollbar.qml \
-    qml/pwnsensor/Settings.qml \
-    qml/pwnsensor/storage.js
+    qml/pwnsensor/storage.js \
+    qml/pwnsensor/SettingsDlg.qml
 
 RESOURCES +=

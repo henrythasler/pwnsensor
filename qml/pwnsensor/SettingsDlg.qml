@@ -3,7 +3,8 @@ import QtQuick.Controls 1.1
 
 Rectangle {
     property var sensors: NULL
-    property var chart: null
+    property var chart: NULL
+    property var storageDB: NULL
     property var sample_rate: sample_slider.value
     property var refresh_rate: refresh_slider.value
 
@@ -118,6 +119,13 @@ Rectangle {
         anchors.bottom: parent.bottom
         Text{x:8;y:0;color:"#eeeeee";text:"Debug Info";font.bold: true}
         Text{x:8;y:16;id:numsamples; color:"#eeeeee";text:"Buffer: 0%"}
+        Text{
+            x:8;y:32;color:"#eeeeee";text:"<a href=\"#\">reset settings</a>"
+            onLinkActivated: {
+//                console.log(link);
+                storageDB.clear();
+                }
+            }
     }
 
 }

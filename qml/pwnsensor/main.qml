@@ -1,8 +1,8 @@
 import QtQuick 2.0
 import QtGraphicalEffects 1.0
 import sensors 1.0
-import QtQuick.LocalStorage 2.0
-import "storage.js" as Storage
+//import QtQuick.LocalStorage 2.0
+//import "storage.js" as Storage
 
 Rectangle {
     id: root
@@ -12,25 +12,29 @@ Rectangle {
     border.width: 0
     property var timerinterval: 1000
     property var t_min: 60  // seconds
+//    property var settings
 
     Component.onCompleted: {
-//        Storage.clear();
-        Storage.initialize();
-//        Storage.setSetting("mySetting","myValue");
-        left_drag.x = Storage.getSetting("left_drawer_width")
+//        left_drag.x = settings.value("left_drawer_width",250)
+
     }
     Component.onDestruction: {
-        Storage.setSetting("left_drawer_width",left_drag.x);
+//        console.log(left_drag.x)
+        settings.setValue("state",state)
+        settings.setValue("left_drawer_width", left_drag.x);
+        settings.setValue("refresh_rate", chart.refreshrate);
+        settings.setValue("sample_rate", chart.samplerate);
+
     }
 
-    state:"LEFT_DRAWER_OPEN"
+    state: settings.value("state","LEFT_DRAWER_OPEN")
     states:[
         State {
             name: "LEFT_DRAWER_OPEN"
             PropertyChanges { target: signals; x:0}
             PropertyChanges { target: settings_drawer; x:2; opacity:0; enabled: false}
             PropertyChanges { target: left_drawer; x:signals.width + left_drag.width + 2}
-            PropertyChanges { target: settings; x:-settings.width}
+            PropertyChanges { target: settings_dlg; x:-settings_dlg.width}
             PropertyChanges { target: left_drag; opacity:1; enabled: true}
 //            PropertyChanges { target: chart; x:signals.width; width:root.width-signals.width}
               },
@@ -38,8 +42,8 @@ Rectangle {
             name: "SETTINGS_DRAWER_OPEN"
             PropertyChanges { target: signals; x:-signals.width-left_drag.width}
             PropertyChanges { target: left_drawer; x:2; opacity:0; enabled: false}
-            PropertyChanges { target: settings_drawer; x:settings.width+2}
-            PropertyChanges { target: settings; x:0}
+            PropertyChanges { target: settings_drawer; x:settings_dlg.width+2}
+            PropertyChanges { target: settings_dlg; x:0}
             PropertyChanges { target: left_drag; opacity:0; enabled: false}
 //            PropertyChanges { target: chart; x:signals.width; width:root.width-signals.width}
               },
@@ -48,7 +52,7 @@ Rectangle {
             PropertyChanges { target: signals; x:-signals.width-left_drag.width}
             PropertyChanges { target: left_drawer; x:2}
             PropertyChanges { target: settings_drawer; x:2}
-            PropertyChanges { target: settings; x:-settings.width}
+            PropertyChanges { target: settings_dlg; x:-settings_dlg.width}
             PropertyChanges { target: left_drag; opacity:0; enabled: false}
 //            PropertyChanges { target: chart; x:0; width:root.width}
               }
@@ -62,7 +66,7 @@ Rectangle {
             NumberAnimation { target: settings_drawer; properties: "x"; duration: 500; easing.type:Easing.OutExpo }
             NumberAnimation { target: settings_drawer; properties: "opacity"; duration: 500; easing.type: Easing.Linear }
             NumberAnimation { target: signals; properties: "x"; duration: 500; easing.type: Easing.OutExpo }
-            NumberAnimation { target: settings; properties: "x"; duration: 500; easing.type: Easing.OutExpo }
+            NumberAnimation { target: settings_dlg; properties: "x"; duration: 500; easing.type: Easing.OutExpo }
             NumberAnimation { target: left_drag; properties: "opacity"; duration: 500; easing.type: Easing.Linear }
 //            NumberAnimation { target: chart; properties: "x, width"; duration: 500; easing.type: Easing.OutExpo }
         }
@@ -83,7 +87,7 @@ Rectangle {
 
     Timer {
         id:maintimer
-        interval: settings.refresh_rate;
+        interval: settings_dlg.refresh_rate;
         running: true;
         repeat: true
         triggeredOnStart: true
@@ -103,7 +107,6 @@ Rectangle {
 //           x = bounds.left()+(m_timestamp - m_sensor->samples().at(s)->time() - tmin) * scale_x
            var ctime = (cursor.x-chart_container.x)/-chart_container.width * chart.sensors.items[0].tmin - chart.sensors.timestamp + chart.sensors.items[0].tmin;
 //            console.log(chart.sensors.timestamp/1000 + "  " + -ctime/1000);
-
            cursorvalue.text = chart.sensors.items[signals.selected_item].valueAt(-ctime).toFixed(2);
 
            }
@@ -138,6 +141,8 @@ Rectangle {
             id: chart
             anchors.fill: parent
             tmin: t_min
+            refreshrate: settings.value("refresh_rate",1000);
+            samplerate: settings.value("sample_rate",1000);
 
             function init(){
 
@@ -205,7 +210,7 @@ Rectangle {
 
     Rectangle {
         id: left_drag
-        x: 250;
+        x: settings.value("left_drawer_width",250);
         width: 2; height: signals.height
         color: "#aaffa500"
 
@@ -255,7 +260,7 @@ Rectangle {
     Rectangle{
         id: settings_drawer
         color: (settingsdrawerMouseArea.containsMouse)?"#88ffffff":"#44ffffff"
-        x:settings.width + 2
+        x:settings_dlg.width + 2
         y:25
         width: 24
         height: 21
@@ -287,9 +292,10 @@ Rectangle {
         color:"#bb252b31"
     } 
 
-    Settings{
-        id:settings
+    SettingsDlg{
+        id:settings_dlg
         sensors: chart.sensors
+        storageDB : settings
 //        rate: root.timerinterval
         chart: chart
         width:160
