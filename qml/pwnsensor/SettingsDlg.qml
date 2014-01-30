@@ -120,12 +120,10 @@ Rectangle {
         Text{x:8;y:0;color:"#eeeeee";text:"Debug Info";font.bold: true}
         Text{x:8;y:16;id:numsamples; color:"#eeeeee";text:"Buffer: 0%"}
         Text{
-            x:8;y:32;color:"#eeeeee";text:"<a href=\"#\">reset settings</a>"
+            id:reset_link; x:8;y:32;linkColor: "#eeeeee";text:"<a href=\"#\">reset settings</a>"
             onLinkActivated: {
-//                console.log(link);
                 storageDB.clear();
                 }
             }
     }
-
 }

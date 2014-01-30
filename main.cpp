@@ -14,10 +14,11 @@ int main(int argc, char *argv[])
     qmlRegisterType<QSensorItem>("sensors", 1, 0, "QSensorItem");
     qmlRegisterType<QSensorSample>("sensors", 1, 0, "QSensorSample");
     qmlRegisterType<SignalCanvas>("sensors", 1, 0, "SignalCanvas");
-    qmlRegisterType<appSettings>("sensors", 1, 0, "appSettings");
+//    qmlRegisterType<appSettings>("sensors", 1, 0, "appSettings");
 
     QtQuick2ApplicationViewer viewer;
     viewer.rootContext()->setContextProperty("settings", &settings);
+    viewer.rootContext()->setContextProperty("mainwindow",&viewer);
 
     QSurfaceFormat format = viewer.format();
 
@@ -29,11 +30,6 @@ int main(int argc, char *argv[])
     viewer.setTitle("pwnsensor alpha-3");
     viewer.setMainQmlFile(QStringLiteral("qml/pwnsensor/main.qml"));
     viewer.showExpanded();
-
-//    settings.set("position", viewer.geometry());
-//    viewer.setGeometry(100,100,320,200);
-//    QSettings storage("Henry", "pwnsensor");
-
 
     return app.exec();
 }

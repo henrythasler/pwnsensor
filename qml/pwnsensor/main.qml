@@ -4,7 +4,7 @@ import sensors 1.0
 //import QtQuick.LocalStorage 2.0
 //import "storage.js" as Storage
 
-Rectangle {
+Rectangle{
     id: root
     width: 640
     height: 480
@@ -15,7 +15,10 @@ Rectangle {
 //    property var settings
 
     Component.onCompleted: {
-//        left_drag.x = settings.value("left_drawer_width",250)
+        mainwindow.x = settings.value("WindowPos/x",0)
+        mainwindow.y = settings.value("WindowPos/y",0)
+        mainwindow.width = settings.value("WindowPos/width",0)
+        mainwindow.height = settings.value("WindowPos/height",0)
 
     }
     Component.onDestruction: {
@@ -24,6 +27,11 @@ Rectangle {
         settings.setValue("left_drawer_width", left_drag.x);
         settings.setValue("refresh_rate", chart.refreshrate);
         settings.setValue("sample_rate", chart.samplerate);
+        settings.setValue("WindowPos/x", mainwindow.x);
+        settings.setValue("WindowPos/y", mainwindow.y);
+        settings.setValue("WindowPos/width", mainwindow.width);
+        settings.setValue("WindowPos/height", mainwindow.height);
+
 
     }
 
@@ -90,7 +98,7 @@ Rectangle {
         interval: settings_dlg.refresh_rate;
         running: true;
         repeat: true
-        triggeredOnStart: true
+        triggeredOnStart: false
         property var counter:0;
 
         onTriggered:
