@@ -20,6 +20,10 @@ Rectangle{
         mainwindow.width = settings.value("WindowPos/width",0)
         mainwindow.height = settings.value("WindowPos/height",0)
 
+        settings.beginGroup("SensorItems");
+        var keys = settings.childKeys();
+        console.log(keys);
+
     }
     Component.onDestruction: {
 //        console.log(left_drag.x)
@@ -32,6 +36,9 @@ Rectangle{
         settings.setValue("WindowPos/width", mainwindow.width);
         settings.setValue("WindowPos/height", mainwindow.height);
 
+
+        for(var x=0;x<chart.sensors.items.length;x++)
+            settings.setValue("SensorItems/"+chart.sensors.items[x].label, chart.sensors.items[x].checked);
 
     }
 
