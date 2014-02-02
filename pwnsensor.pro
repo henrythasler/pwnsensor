@@ -31,4 +31,5 @@ OTHER_FILES += \
     qml/pwnsensor/storage.js \
     qml/pwnsensor/SettingsDlg.qml
 
-RESOURCES +=
+RESOURCES += \
+    gfx.qrc

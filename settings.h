@@ -21,7 +21,9 @@ public:
     Q_INVOKABLE inline QVariant value(const QString &key, const QVariant &defaultValue = QVariant()) const { return QSettings::value(key, defaultValue); }
     Q_INVOKABLE inline void clear(void) { QSettings::clear(); }
     Q_INVOKABLE inline void beginGroup(const QString & prefix) { QSettings::beginGroup(prefix); }
+    Q_INVOKABLE inline void endGroup(void) { QSettings::endGroup(); }
     Q_INVOKABLE inline QStringList childKeys(void) const { return QSettings::childKeys(); }
+    Q_INVOKABLE inline QStringList childGroups(void) const { return QSettings::childGroups(); }
 };
 
 #endif // SETTINGS_H

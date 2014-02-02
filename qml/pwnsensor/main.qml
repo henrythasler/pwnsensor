@@ -11,7 +11,6 @@ Rectangle{
     color: "#252b31"
     border.width: 0
     property var timerinterval: 1000
-    property var t_min: 60  // seconds
 //    property var settings
 
     Component.onCompleted: {
@@ -20,29 +19,49 @@ Rectangle{
         mainwindow.width = settings.value("WindowPos/width",0)
         mainwindow.height = settings.value("WindowPos/height",0)
 
-        settings.beginGroup("SensorItems");
-        var keys = settings.childKeys();
-        console.log(keys);
+        if(!settings.value("General/tutorial",0))
+            {
+            console.log("show tutorial")
+            settings.setValue("General/tutorial",1)
+            }
 
     }
     Component.onDestruction: {
 //        console.log(left_drag.x)
-        settings.setValue("state",state)
-        settings.setValue("left_drawer_width", left_drag.x);
-        settings.setValue("refresh_rate", chart.refreshrate);
-        settings.setValue("sample_rate", chart.samplerate);
-        settings.setValue("WindowPos/x", mainwindow.x);
-        settings.setValue("WindowPos/y", mainwindow.y);
-        settings.setValue("WindowPos/width", mainwindow.width);
-        settings.setValue("WindowPos/height", mainwindow.height);
+
+        settings.beginGroup("General");
+            settings.setValue("state",state)
+            settings.setValue("left_drawer_width", left_drag.x);
+            settings.setValue("refresh_rate", chart.refreshrate);
+            settings.setValue("sample_rate", chart.samplerate);
+            settings.setValue("tmin", chart.tmin);
+        settings.endGroup();
+
+        settings.beginGroup("WindowPos");
+            settings.setValue("x", mainwindow.x);
+            settings.setValue("y", mainwindow.y);
+            settings.setValue("width", mainwindow.width);
+            settings.setValue("height", mainwindow.height);
+        settings.endGroup();
 
 
+        settings.beginGroup("SensorItems");
         for(var x=0;x<chart.sensors.items.length;x++)
-            settings.setValue("SensorItems/"+chart.sensors.items[x].label, chart.sensors.items[x].checked);
+            {
+            settings.beginGroup(chart.sensors.items[x].adapter+"_"+chart.sensors.items[x].label);
+                settings.setValue("checked", chart.sensors.items[x].checked);
+                settings.setValue("color", chart.sensors.items[x].color);
+                settings.setValue("width", chart.sensors.items[x].width);
+                settings.setValue("max_samples", chart.sensors.items[x].max_samples);
+                settings.setValue("ymin", chart.sensors.items[x].ymin);
+                settings.setValue("ymax", chart.sensors.items[x].ymax);
+            settings.endGroup();
+            }
+        settings.endGroup();
 
     }
 
-    state: settings.value("state","LEFT_DRAWER_OPEN")
+    state: settings.value("General/state","LEFT_DRAWER_OPEN")
     states:[
         State {
             name: "LEFT_DRAWER_OPEN"
@@ -132,8 +151,8 @@ Rectangle{
         id: chart_container
         x:10
         y:10
-        width: parent.width-2*x
-        height: parent.height-2*y
+        width: parent.width-4*x
+        height: parent.height-4*y
         clip: true
 
 //        GaussianBlur {
@@ -155,13 +174,31 @@ Rectangle{
         SignalCanvas{
             id: chart
             anchors.fill: parent
-            tmin: t_min
-            refreshrate: settings.value("refresh_rate",1000);
-            samplerate: settings.value("sample_rate",1000);
+            tmin: settings.value("General/tmin", 60);
+            refreshrate: settings.value("General/refresh_rate",1000);
+            samplerate: settings.value("General/sample_rate",1000);
 
             function init(){
 
+                settings.beginGroup("SensorItems");
+                var keys = settings.childGroups();
+//                console.log(keys)
+
                 for(var x=0;x<chart.sensors.items.length;x++)
+                    {
+                    if(keys.indexOf(chart.sensors.items[x].adapter+"_"+chart.sensors.items[x].label)>0)
+                        {
+                        settings.beginGroup(chart.sensors.items[x].adapter+"_"+chart.sensors.items[x].label);
+                            chart.sensors.items[x].checked = (settings.value("checked","false") == "true")?true:false;
+                            chart.sensors.items[x].color = settings.value("color","white");
+                            chart.sensors.items[x].width = settings.value("width",2);
+                            chart.sensors.items[x].max_samples = settings.value("max_samples",10000);
+                            chart.sensors.items[x].ymin = settings.value("ymin",0);
+                            chart.sensors.items[x].ymax = settings.value("ymax",100);
+                        settings.endGroup();
+                        }
+
+
                     signals.model.append({"name": "<b>"+chart.sensors.items[x].label+"</b>",
                                           "value": chart.sensors.items[x].value,
                                           "itemcolor": chart.sensors.items[x].color,
@@ -170,18 +207,70 @@ Rectangle{
                                           "unit": chart.sensors.items[x].unit
                                          }
                                          );
+                    }
+                settings.endGroup();
             }
             Component.onCompleted: init();
+
+            Rectangle{
+                id: dummydrag
+//                width: 100
+//                height: 100
+                property var y_old: 0
+                onYChanged: {
+                    if (zoomarea.drag.active && chart.sensors.items[signals.selected_item].checked)
+                        {
+                        var dy = y-y_old;
+                        var sig_dy = chart.sensors.items[signals.selected_item].ymax - chart.sensors.items[signals.selected_item].ymin;
+                        chart.sensors.items[signals.selected_item].ymax += dy * sig_dy / chart.height;
+                        chart.sensors.items[signals.selected_item].ymin += dy * sig_dy / chart.height;
+                        chart.update();
+                        y_old = y;
+                        }
+                }
+            }
 
             MouseArea{
                 id: zoomarea
                 anchors.fill:parent
+                hoverEnabled: true
+                drag.target: dummydrag
+                drag.axis: Drag.YAxis
+//                drag.minimumY: 0
+//                drag.maximumY: 100
                 onWheel:{
-                        if (wheel.angleDelta.y > 0)
-                            t_min = Math.max(t_min/2,5);
-                        else
-                            t_min = Math.min(t_min*2,7200);
-                        chart.update();
+
+                        if( wheel.modifiers & Qt.ControlModifier)    // zoom signal
+                            {
+                            if(chart.sensors.items[signals.selected_item].checked)
+                                {
+                                var dy = (chart.sensors.items[signals.selected_item].ymax-chart.sensors.items[signals.selected_item].ymin);
+                                var f = (1-mouseY/height)
+                                var c = chart.sensors.items[signals.selected_item].ymin+f*dy;
+
+                                if (wheel.angleDelta.y > 0) // zoom in
+                                    {
+                                    chart.sensors.items[signals.selected_item].ymax = c+dy*(1-f)*0.7
+                                    chart.sensors.items[signals.selected_item].ymin = c-dy*f*0.7
+    //                                console.log(chart.sensors.items[signals.selected_item].ymin + " " + chart.sensors.items[signals.selected_item].ymax)
+                                    }
+                                else    // zoom out
+                                    {
+                                    chart.sensors.items[signals.selected_item].ymax = c+dy*(1-f)/0.7
+                                    chart.sensors.items[signals.selected_item].ymin = c-dy*f/0.7
+                                    }
+    //                            console.log("dy=" + dy + " f=" + f + " c=" + c + " ymin=" + chart.sensors.items[signals.selected_item].ymin + " ymax="+chart.sensors.items[signals.selected_item].ymax)
+                                chart.update();
+                                }
+                            }
+                        else{                                       // zoom time
+                            if (wheel.angleDelta.y > 0)
+                                chart.tmin = Math.max(chart.tmin*0.7,5);
+                            else
+                                chart.tmin = Math.min(chart.tmin/0.7,86400);
+                            chart.update();
+                            }
+
                 }
             }
         }
@@ -193,20 +282,45 @@ Rectangle{
 //        height: parent.height
 //    }
 
+    Text{
+        id: scale_ymax
+        x:root.width
+        y:chart.y
+        color: "#eeeeee"
+        anchors.right: parent.right
+//        verticalAlignment: Text.AlignVCenter
+        font.pointSize: 8
+        text: chart.sensors.items[signals.selected_item].ymax.toFixed(0)
+    }
+
+    Text{
+        id: scale_ymin
+        x:root.width
+        y:chart.height
+        color: "#eeeeee"
+        anchors.right: parent.right
+//        verticalAlignment: Text.AlignVCenter
+        font.pointSize: 8
+        text: chart.sensors.items[signals.selected_item].ymin.toFixed(0)
+    }
+
 
     Rectangle {
         id: cursor
-        x: root.width-chart_container.x-1
-        width: 2; height: signals.height
+        x: chart_container.x+chart_container.width-1
+        y:chart_container.y
+        width: 2; height: chart_container.height
 //        color: "white"
         color: "#aaa5a5a5"
 //        visible: false
+        Image{y: chart_container.y-21; source: "qrc:/svg/dropDownTriangle.svg"; anchors.horizontalCenter: cursor.horizontalCenter; transform: Rotation {origin.x: 8; origin.y: 6; angle: 180}}
+        Image{y: chart_container.height-2; source: "qrc:/svg/dropDownTriangle.svg"; anchors.horizontalCenter: cursor.horizontalCenter}
 
         Text{
             id: cursorvalue
 //            anchors.centerIn: parent
             anchors.horizontalCenter: cursor.horizontalCenter
-            anchors.bottom: parent.bottom
+            anchors.bottom: root.bottom
             color: "white"
         }
 
@@ -217,7 +331,7 @@ Rectangle{
             drag.target: cursor
             drag.axis: Drag.XAxis
             drag.minimumX: chart_container.x
-            drag.maximumX: root.width-chart_container.x-1
+            drag.maximumX: chart_container.x+chart_container.width-1
         }
     }
 
@@ -225,7 +339,7 @@ Rectangle{
 
     Rectangle {
         id: left_drag
-        x: settings.value("left_drawer_width",250);
+        x: settings.value("General/left_drawer_width",250);
         width: 2; height: signals.height
         color: "#aaffa500"
 

@@ -40,15 +40,16 @@ class QSensorItem : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QString label READ getlabel)
+    Q_PROPERTY(QString adapter READ getadapter)
     Q_PROPERTY(QString unit READ getunit)
     Q_PROPERTY(float value READ getvalue NOTIFY valueChanged)
     Q_PROPERTY(float minval READ getminval)
     Q_PROPERTY(float maxval READ getmaxval)
-    Q_PROPERTY(qint64 tmin READ gettmin)
+    Q_PROPERTY(qint64 tmin READ gettmin WRITE settmin NOTIFY tminChanged)
     Q_PROPERTY(qint64 tmax READ gettmax)
-    Q_PROPERTY(qint32 max_samples READ getmax_samples CONSTANT)
-    Q_PROPERTY(float ymin READ getymin)
-    Q_PROPERTY(float ymax READ getymax)
+    Q_PROPERTY(qint32 max_samples READ getmax_samples WRITE setmax_samples NOTIFY max_samplesChanged)
+    Q_PROPERTY(float ymin READ getymin WRITE setymin NOTIFY yminchanged)
+    Q_PROPERTY(float ymax READ getymax WRITE setymax NOTIFY ymaxchanged)
     Q_PROPERTY(float width READ getwidth WRITE setwidth NOTIFY widthChanged)
     Q_PROPERTY(QString color READ getcolor WRITE setcolor NOTIFY colorChanged)
     Q_PROPERTY(bool checked READ getchecked WRITE setchecked NOTIFY checkChanged)
@@ -60,19 +61,24 @@ public:
     Q_INVOKABLE float valueAt(const qint64 &timestamp);
 
     QString getlabel(){return label;};
+    QString getadapter(){return adapter;};
     QString getunit(){return unit;};
     float getvalue();
     qint64 gettmin(){return tmin;};
+    void settmin(const qint64 &val){tmin=val; emit tminChanged();}
     qint64 gettmax(){return tmax;};
     qint64 getmax_samples(){return max_samples;};
+    void setmax_samples(qint64 val){max_samples=val;};
     float getymin(){return ymin;};
+    void setymin(float val){ymin=val; emit yminchanged();};
     float getymax(){return ymax;};
+    void setymax(float val){ymax=val; emit ymaxchanged();};
     QString getcolor(){return color;};
-    void setcolor(const QString &newcol){color=newcol;};
+    void setcolor(const QString &newcol){color=newcol; emit colorChanged();};
     float getwidth(){return linewidth;};
-    void setwidth(const float &newwidth){linewidth=newwidth;};
+    void setwidth(const float &newwidth){linewidth=newwidth; emit widthChanged();};
     bool getchecked(){return checked;};
-    void setchecked(const bool &newcheck){if(checked!=newcheck) {checked=newcheck;emit checkChanged();} };
+    void setchecked(const bool &newcheck){if(checked!=newcheck) {checked=newcheck; emit checkChanged();} };
     float getminval(){return minval;};
     float getmaxval(){return maxval;};
 
@@ -107,6 +113,10 @@ signals:
     void colorChanged();
     void valueChanged();
     void widthChanged();
+    void max_samplesChanged();
+    void yminchanged();
+    void ymaxchanged();
+    void tminChanged();
 
 public slots:
 

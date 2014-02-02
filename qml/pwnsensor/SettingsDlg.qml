@@ -33,7 +33,8 @@ Rectangle {
         maximumValue: 10
         minimumValue: 1
         onValueChanged: {
-            for(var x=0;x<sensors.items.length;x++)
+            // item[0] is connected automatically, change the others as well
+            for(var x=1;x<sensors.items.length;x++)
                  {
                  sensors.items[x].width = value;
                  }
