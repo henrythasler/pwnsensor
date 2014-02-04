@@ -113,8 +113,7 @@ Rectangle{
             Qt.quit();
         }
         Keys.onSpacePressed: {
-            glow.visible = 1-glow.visible;
-//            tex.visible = 1-tex.visible;
+//            glow.visible = 1-glow.visible;
         }
 
     }
@@ -271,9 +270,9 @@ Rectangle{
                             }
                         else{                                       // zoom time
                             if (wheel.angleDelta.y > 0)
-                                chart.tmin = Math.max(chart.tmin*0.7,5);
+                                chart.tmin = Math.max(chart.tmin*0.75,5);
                             else
-                                chart.tmin = Math.min(chart.tmin/0.7,86400);
+                                chart.tmin = Math.min(chart.tmin/0.75,86400);
                             chart.update();
                             }
 
@@ -330,7 +329,7 @@ Rectangle{
         anchors.bottom: parent.bottom
 //        verticalAlignment: Text.AlignVCenter
         font.pointSize: 8
-        text: chart.tmin
+        text: "-"+(chart.tmin).toFixed(0) + "s"
     }
 
 
