@@ -139,9 +139,15 @@ Rectangle{
                 }
 
 //           x = bounds.left()+(m_timestamp - m_sensor->samples().at(s)->time() - tmin) * scale_x
-           var ctime = (cursor.x-chart_container.x)/-chart_container.width * chart.sensors.items[0].tmin - chart.sensors.timestamp + chart.sensors.items[0].tmin;
-//            console.log(chart.sensors.timestamp/1000 + "  " + -ctime/1000);
-           cursorvalue.text = chart.sensors.items[signals.selected_item].valueAt(-ctime).toFixed(2);
+           var ctime = (cursor.x-chart_container.x)/-chart_container.width * chart.sensors.items[signals.selected_item].tmin - chart.sensors.timestamp + chart.sensors.items[signals.selected_item].tmin;
+//            console.log(chart.sensors.items[signals.selected_item].samples[chart.sensors.items[signals.selected_item].samples.length-1].time/1000 + "  " + -ctime/1000);
+
+           var val = chart.sensors.items[signals.selected_item].valueAt(-ctime);
+           cursorvalue.text = val.toFixed(2) + " " + chart.sensors.items[signals.selected_item].unit;
+           var pos = chart.sensors.items[signals.selected_item].map2canvas(Qt.rect(chart_container.x, chart_container.y, chart_container.width, chart_container.height), -ctime, val);
+//           console.log(pos)
+           cursor_crosshair.y=pos.y-cursor_crosshair.height/2
+//           cursor_crosshair.x=pos.x
 
            }
        }
@@ -305,6 +311,46 @@ Rectangle{
     }
 
 
+    Text{
+        id: scale_tmax
+        x:chart.width
+        y:chart.height+10
+        color: "#eeeeee"
+        anchors.bottom: parent.bottom
+//        verticalAlignment: Text.AlignVCenter
+        font.pointSize: 8
+        text: "now"
+    }
+
+    Text{
+        id: scale_tmin
+        x:chart_container.x
+        y:chart.height+10
+        color: "#eeeeee"
+        anchors.bottom: parent.bottom
+//        verticalAlignment: Text.AlignVCenter
+        font.pointSize: 8
+        text: chart.tmin
+    }
+
+
+    Item{
+        id: cursor_crosshair
+//        x:cursor.x;
+        anchors.horizontalCenter: cursor.horizontalCenter;
+        width:12; height: 12;
+        Rectangle{color:"#00000000"; border.color: "white"; border.width: 2; radius: 0; anchors.fill: parent}
+        Rectangle{x:12;y:12;color:"#bb252b31"; width:cursorvalue.contentWidth; height: cursorvalue.contentHeight;}
+        Text{
+            id: cursorvalue
+            x:12
+            y:12
+            color: "#eeeeee"
+        }
+    }
+
+
+
     Rectangle {
         id: cursor
         x: chart_container.x+chart_container.width-1
@@ -313,16 +359,24 @@ Rectangle{
 //        color: "white"
         color: "#aaa5a5a5"
 //        visible: false
+
+        onXChanged: {
+            var ctime = -((cursor.x-chart_container.x)/-chart_container.width * chart.sensors.items[signals.selected_item].tmin - chart.sensors.timestamp + chart.sensors.items[signals.selected_item].tmin);
+ //            console.log(chart.sensors.items[signals.selected_item].samples[chart.sensors.items[signals.selected_item].samples.length-1].time/1000 + "  " + -ctime/1000);
+
+            var val = chart.sensors.items[signals.selected_item].valueAt(ctime);
+            cursorvalue.text = val.toFixed(2) + " " + chart.sensors.items[signals.selected_item].unit;
+            var pos = chart.sensors.items[signals.selected_item].map2canvas(Qt.rect(chart_container.x, chart_container.y, chart_container.width, chart_container.height), ctime, val);
+ //           console.log(pos)
+            cursor_crosshair.y=pos.y-cursor_crosshair.height/2
+//            cursor_crosshair.x=pos.x
+        }
+
         Image{y: chart_container.y-21; source: "qrc:/svg/dropDownTriangle.svg"; anchors.horizontalCenter: cursor.horizontalCenter; transform: Rotation {origin.x: 8; origin.y: 6; angle: 180}}
         Image{y: chart_container.height-2; source: "qrc:/svg/dropDownTriangle.svg"; anchors.horizontalCenter: cursor.horizontalCenter}
 
-        Text{
-            id: cursorvalue
-//            anchors.centerIn: parent
-            anchors.horizontalCenter: cursor.horizontalCenter
-            anchors.bottom: root.bottom
-            color: "white"
-        }
+//        Image{id: cursor_crosshair; x:cursor.x; source: "qrc:/svg/crosshair2.svg"; anchors.horizontalCenter: cursor.horizontalCenter;}
+
 
         MouseArea {
             cursorShape: Qt.SizeHorCursor;
@@ -431,4 +485,6 @@ Rectangle{
         height: root.height
         color:"#bb252b31"
     }
+
+
 }

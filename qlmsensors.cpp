@@ -205,7 +205,20 @@ float QSensorItem::valueAt(const qint64 &timestamp)
 {
     for(int x=0;x<m_samples.size();x++)
         if(m_samples.at(x)->time()>=timestamp) return m_samples.at(x)->value();
-    return 0;
+
+    return (m_samples.length())?m_samples.at(m_samples.length()-1)->value():0;
+}
+
+QPointF QSensorItem::map2canvas(const QRectF &bounds, const qint64 &timestamp, const float &val)
+{
+    float scale_y = bounds.height() / (ymax-ymin);
+    float scale_x = -bounds.width() / tmin;
+    qint64 now = QDateTime().currentDateTime().toMSecsSinceEpoch();
+
+    return QPointF(bounds.left()+(now - timestamp - tmin) * scale_x,
+                     bounds.top()+bounds.height()-(val - ymin) * scale_y
+                    );
+
 }
 
 

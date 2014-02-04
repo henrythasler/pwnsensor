@@ -6,6 +6,8 @@
 #include <QTime>
 #include <QDebug>
 #include <QQmlListProperty>
+#include <QPointF>
+#include <QRectF>
 
 // LM-Sensors Library Header
 #include <sensors/sensors.h>/* Library initialization and clean-up */
@@ -59,6 +61,7 @@ public:
     explicit QSensorItem(QObject *parent = 0);
 
     Q_INVOKABLE float valueAt(const qint64 &timestamp);
+    Q_INVOKABLE QPointF map2canvas(const QRectF &bounds, const qint64 &timestamp, const float &val);
 
     QString getlabel(){return label;};
     QString getadapter(){return adapter;};

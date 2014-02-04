@@ -1,5 +1,7 @@
 <RCC>
     <qresource prefix="/svg">
         <file>dropDownTriangle.svg</file>
+        <file>crosshair.svg</file>
+        <file>crosshair2.svg</file>
     </qresource>
 </RCC>

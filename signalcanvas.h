@@ -49,7 +49,7 @@ class SignalCanvas : public QQuickItem
     Q_OBJECT
     Q_PROPERTY(int samplerate READ samplerate WRITE setsamplerate NOTIFY samplerateChanged)
     Q_PROPERTY(int refreshrate READ refreshrate WRITE setrefreshrate NOTIFY refreshrateChanged)
-    Q_PROPERTY(int tmin READ tmin WRITE settmin)
+    Q_PROPERTY(qint64 tmin READ tmin WRITE settmin)
     Q_PROPERTY(QLmSensors* sensors READ getSensors CONSTANT)
 
 public:
@@ -62,8 +62,8 @@ public:
     int refreshrate(){return m_refreshrate;};
     void setrefreshrate(int val){m_refreshrate=val;};
 
-    int tmin(){return m_tmin;};
-    void settmin(int val){m_tmin=val;};
+    qint64 tmin(){return m_tmin;};
+    void settmin(qint64 val){m_tmin=val;};
 
     QLmSensors* getSensors(){return LmSensors;};
     QTimer *timer;
