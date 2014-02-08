@@ -27,19 +27,19 @@ Rectangle {
         y: 25
         width: 144
         height: width_label.y+16
-        value: sensors.items[0].width
         tickmarksEnabled: false
         stepSize: 1
         maximumValue: 10
         minimumValue: 1
         onValueChanged: {
             // item[0] is connected automatically, change the others as well
-            for(var x=1;x<sensors.items.length;x++)
+            for(var x=0;x<sensors.items.length;x++)
                  {
                  sensors.items[x].width = value;
                  }
             chart.update();
         }
+        Component.onCompleted: value = sensors.items[0].width;
 
     }
 

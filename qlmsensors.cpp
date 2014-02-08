@@ -49,6 +49,25 @@ const sensors_feature *feature;
 const char *adap=NULL;
 char *label;
 
+
+// add CPU load
+
+    QSensorItem *new_item = new QSensorItem();
+    new_item->type = new_item->CPU;
+    new_item->index = m_sensorItems.count();
+    new_item->label = "CPU Load";
+    new_item->adapter = "proc-stat";
+    new_item->max_samples = 10000;
+    new_item->color = palette.at(m_sensorItems.count()%palette.count());
+    new_item->tmin = 5 * 60 * 1000;    // now is 0
+    new_item->ymin=0;
+    new_item->ymax=105;
+    new_item->unit = "%";
+    m_sensorItems.append(new_item);
+
+
+// add lm-sensors
+
 if(int err = sensors_init(NULL))
     {
     m_errorMessage = sensors_strerror(err);
@@ -164,6 +183,8 @@ QSensorItem::QSensorItem(QObject *parent) :
     scale = 1.;
     max_samples = 32;
     checked = false;
+    m_total_jiffies = 0;
+    m_work_jiffies = 0;
 }
 
 
@@ -174,7 +195,7 @@ double val;
     switch(type)
         {
         case LM: sensors_get_value(chip, sub->number,&val); break;
-        case CPU: break;
+        case CPU: getCPULoad(val); break;
         default: val=0;
         }
 
@@ -184,7 +205,7 @@ double val;
     if(val>maxval) maxval=val;
 
     m_samples.append(new QSensorSample(timestamp, (float)val));
-    emit valueChanged();
+    emit currentsampleChanged();
 
     if(m_samples.size() > max_samples)
         {
@@ -198,6 +219,39 @@ double val;
             }
         }
     return true;
+}
+
+
+
+
+void QSensorItem::getCPULoad(double &val)
+{
+// http://stackoverflow.com/questions/3017162/how-to-get-total-cpu-usage-in-linux-c
+// http://www.linuxhowtos.org/System/procstat.htm
+
+// cpu  63536 963 11961 946741 2090 0 107 0 0 0
+
+    QFile data("/proc/stat");
+    if (data.open(QFile::ReadOnly))
+        {
+        QTextStream in(&data);
+        QStringList list;
+        qint64 total_jiffies=0, work_jiffies=0;
+
+        do{
+          list = in.readLine(1024).split(" ", QString::SkipEmptyParts);
+          }while(list.at(0) != "cpu");
+
+        for(int x=1;x<list.length();x++) total_jiffies+=list.at(x).toInt();
+        for(int x=1;x<4;x++) work_jiffies+=list.at(x).toInt();
+
+        if(m_total_jiffies) val = float(work_jiffies - m_work_jiffies) / float(total_jiffies - m_total_jiffies)*100.;
+        else val=0;
+
+        m_work_jiffies = work_jiffies;
+        m_total_jiffies = total_jiffies;
+        }
+    else val=0;
 }
 
 
@@ -225,7 +279,13 @@ QPointF QSensorItem::map2canvas(const QRectF &bounds, const qint64 &timestamp, c
 float QSensorItem::getvalue()
 {
 double val;
-    sensors_get_value(chip, sub->number,&val);
+
+    switch(type)
+        {
+        case LM: sensors_get_value(chip, sub->number,&val); break;
+        case CPU: getCPULoad(val); break;
+        default: val=0;
+        }
     return (float) val;
 }
 

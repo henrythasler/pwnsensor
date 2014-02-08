@@ -8,6 +8,7 @@
 #include <QQmlListProperty>
 #include <QPointF>
 #include <QRectF>
+#include <QFile>
 
 // LM-Sensors Library Header
 #include <sensors/sensors.h>/* Library initialization and clean-up */
@@ -44,7 +45,7 @@ class QSensorItem : public QObject
     Q_PROPERTY(QString label READ getlabel)
     Q_PROPERTY(QString adapter READ getadapter)
     Q_PROPERTY(QString unit READ getunit)
-    Q_PROPERTY(float value READ getvalue NOTIFY valueChanged)
+    Q_PROPERTY(float value READ currentsample NOTIFY currentsampleChanged)
     Q_PROPERTY(float minval READ getminval)
     Q_PROPERTY(float maxval READ getmaxval)
     Q_PROPERTY(qint64 tmin READ gettmin WRITE settmin NOTIFY tminChanged)
@@ -60,13 +61,13 @@ class QSensorItem : public QObject
 public:
     explicit QSensorItem(QObject *parent = 0);
 
+    Q_INVOKABLE float getvalue();
     Q_INVOKABLE float valueAt(const qint64 &timestamp);
     Q_INVOKABLE QPointF map2canvas(const QRectF &bounds, const qint64 &timestamp, const float &val);
 
     QString getlabel(){return label;};
     QString getadapter(){return adapter;};
     QString getunit(){return unit;};
-    float getvalue();
     qint64 gettmin(){return tmin;};
     void settmin(const qint64 &val){tmin=val; emit tminChanged();}
     qint64 gettmax(){return tmax;};
@@ -82,6 +83,7 @@ public:
     void setwidth(const float &newwidth){linewidth=newwidth; emit widthChanged();};
     bool getchecked(){return checked;};
     void setchecked(const bool &newcheck){if(checked!=newcheck) {checked=newcheck; emit checkChanged();} };
+    float currentsample(){if(m_samples.length()) return m_samples.last()->value(); else return 0;}
     float getminval(){return minval;};
     float getmaxval(){return maxval;};
 
@@ -91,6 +93,7 @@ public:
 
 
     bool do_sample(const qint64 &timestamp);
+    void getCPULoad(double &val);
 
     int index;
     enum SensorType { CPU, LM };
@@ -114,7 +117,7 @@ signals:
 //    void updateSamples();
     void checkChanged();
     void colorChanged();
-    void valueChanged();
+    void currentsampleChanged();
     void widthChanged();
     void max_samplesChanged();
     void yminchanged();
@@ -125,6 +128,8 @@ public slots:
 
 private:
     QList<QSensorSample*> m_samples;
+
+    qint64 m_total_jiffies, m_work_jiffies;
 
 };
 
