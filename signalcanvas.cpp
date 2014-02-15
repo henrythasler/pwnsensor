@@ -130,7 +130,11 @@ LineNode::LineNode(QSensorItem *sensor)
     :m_sensor(sensor)
 {
     m_geometry = new QSGGeometry(QSGGeometry::defaultAttributes_Point2D(), m_sensor->samples().count());
+//    m_geometry = new QSGGeometry(QSGGeometry::defaultAttributes_ColoredPoint2D(), m_sensor->samples().count());
+
     m_geometry->setDrawingMode(GL_TRIANGLE_STRIP);
+//    m_geometry->setDrawingMode(GL_POINTS);
+
     setGeometry(m_geometry);
     setFlag(QSGNode::OwnsGeometry);
 
@@ -166,10 +170,12 @@ void LineNode::updateGeometry(const QRectF &bounds)
 
         m_geometry->allocate(MAX(last_sample-first_sample, 0)*4);
         QSGGeometry::Point2D *vertices = m_geometry->vertexDataAsPoint2D();
+//        QSGGeometry::ColoredPoint2D  *vertices = m_geometry->vertexDataAsColoredPoint2D();
 
         m_color.setNamedColor(m_sensor->color);
         if(m_material->color() != m_color)
             {
+//            m_color.setAlphaF(0.5);
             m_material->setColor(m_color);
             markDirty(QSGNode::DirtyMaterial);
             }

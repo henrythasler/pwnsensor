@@ -52,11 +52,12 @@ Rectangle {
                 id: colorDialog
                 title: "Choose a color"
                 color: itemcolor
+//                showAlphaChannel: true
                 onAccepted: {
                             sensors.items[index].color=currentColor;
                             colorIndicator.color = sensors.items[index].color;
                             chart.update();
-//                            console.log(sensors.items[index].color + "" + colorDialog.color);
+                            console.log(colorDialog.currentColor);
                             }
 //                onRejected: { console.log("Rejected") }
             }

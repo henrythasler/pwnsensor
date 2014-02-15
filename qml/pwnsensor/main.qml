@@ -1,5 +1,5 @@
 import QtQuick 2.0
-import QtGraphicalEffects 1.0
+//import QtGraphicalEffects 1.0
 import sensors 1.0
 //import QtQuick.LocalStorage 2.0
 //import "storage.js" as Storage
@@ -12,6 +12,8 @@ Rectangle{
     border.width: 0
     property var timerinterval: 1000
 //    property var settings
+
+//    Image{source: "qrc:/svg/pwnsensor80.png"}
 
     Component.onCompleted: {
         mainwindow.x = settings.value("WindowPos/x",0)
@@ -480,7 +482,7 @@ Rectangle{
         storageDB : settings
 //        rate: root.timerinterval
         chart: chart
-        width:160
+        width:200
         height: root.height
         color:"#bb252b31"
     }

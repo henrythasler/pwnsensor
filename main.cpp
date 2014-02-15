@@ -19,12 +19,14 @@ int main(int argc, char *argv[])
     QtQuick2ApplicationViewer viewer;
     viewer.rootContext()->setContextProperty("settings", &settings);
     viewer.rootContext()->setContextProperty("mainwindow",&viewer);
+    qDebug() << viewer.engine()->importPathList();
 
     QSurfaceFormat format = viewer.format();
 
     qDebug() << "OpenGL v" << format.majorVersion() << "." << format.minorVersion();
 
     format.setSamples(16);
+//    format.setStereo(true);
     viewer.setFormat(format);
 
     viewer.setTitle("pwnsensor alpha-3");

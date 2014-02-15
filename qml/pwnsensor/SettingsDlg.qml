@@ -17,22 +17,19 @@ Rectangle {
         x: 8
         y: 8
         color: "#eeeeee"
-        font.bold: true
-        text: "Line Width:"
+        text: "<b>Line Width:</b> " + linewidth_slider.value + "px"
     }
-    Text{color: "#eeeeee"; text: linewidth_slider.value + "px"; id:linewidth; x: 94; y: width_label.y; width: 32;height: 19}
     Slider {
         id: linewidth_slider
         x: 8
         y: 25
-        width: 144
+        width: parent.width - 2*x
         height: width_label.y+16
         tickmarksEnabled: false
         stepSize: 1
         maximumValue: 10
         minimumValue: 1
         onValueChanged: {
-            // item[0] is connected automatically, change the others as well
             for(var x=0;x<sensors.items.length;x++)
                  {
                  sensors.items[x].width = value;
@@ -49,10 +46,8 @@ Rectangle {
         x: 8
         y: 68
         color: "#eeeeee"
-        font.bold: true
-        text: "Refreshrate:"
+        text: "<b>Refreshrate:</b> " + refresh_slider.value.toFixed(0) + "ms"
     }
-    Text{color: "#eeeeee"; text: refresh_slider.value.toFixed(0) + "ms"; x: 94; y: refresh_label.y; width: 32;height: 19}
     Slider {
         id: refresh_slider
         x: refresh_label.x
@@ -75,10 +70,8 @@ Rectangle {
         x: 8
         y: 128
         color: "#eeeeee"
-        font.bold: true
-        text: "Samplerate:"
+        text: "<b>Samplerate:</b> " + sample_slider.value.toFixed(0) + "ms"
     }
-    Text{color: "#eeeeee"; text: sample_slider.value.toFixed(0) + "ms"; x: 94; y: sample_label.y; width: 32;height: 19}
     Slider {
         id: sample_slider
         x: sample_label.x
@@ -116,15 +109,20 @@ Rectangle {
 
     Item{
         width: parent.width
-        height: 100
-        anchors.bottom: parent.bottom
-        Text{x:8;y:0;color:"#eeeeee";text:"Debug Info";font.bold: true}
-        Text{x:8;y:16;id:numsamples; color:"#eeeeee";text:"Buffer: 0%"}
-        Text{
-            id:reset_link; x:8;y:32;linkColor: "#eeeeee";text:"<a href=\"#\">reset settings</a>"
-            onLinkActivated: {
-                storageDB.clear();
-                }
+        x:8
+        y:200
+//        height: 200
+//        anchors.bottom: parent.bottom
+        Column{
+            Text{
+                width: linewidth_slider.width;
+                color:"#eeeeee";
+                wrapMode: Text.WordWrap
+                text:"<b>About pwnsensor</b><br>by Henry Thasler<br>pwnsensor@thasler.org<br>";
             }
+
+            Text{color:"#eeeeee";text:"Debug Info";font.bold: true}
+            Text{id:numsamples; color:"#eeeeee";text:"Buffer: 0%"}
+        }
     }
 }
