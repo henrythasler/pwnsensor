@@ -13,7 +13,8 @@ Rectangle{
     property var timerinterval: 1000
 //    property var settings
 
-//    Image{source: "qrc:/svg/pwnsensor80.png"}
+//    Image{anchors.centerIn: parent; source: "qrc:/svg/pwnsensor80.png"}
+//    Image{anchors.centerIn: parent; source: "qrc:/svg/crosshair.svg"}
 
     Component.onCompleted: {
         mainwindow.x = settings.value("WindowPos/x",0)
@@ -23,7 +24,7 @@ Rectangle{
 
         if(!settings.value("General/tutorial",0))
             {
-            console.log("show tutorial")
+            tutorial.visible=true;
             settings.setValue("General/tutorial",1)
             }
 
@@ -153,7 +154,6 @@ Rectangle{
            }
        }
 
-
     Item{
         id: chart_container
         x:10
@@ -193,7 +193,7 @@ Rectangle{
 
                 for(var x=0;x<chart.sensors.items.length;x++)
                     {
-                    if(keys.indexOf(chart.sensors.items[x].adapter+"_"+chart.sensors.items[x].label)>0)
+                    if(keys.indexOf(chart.sensors.items[x].adapter+"_"+chart.sensors.items[x].label)>=0)
                         {
                         settings.beginGroup(chart.sensors.items[x].adapter+"_"+chart.sensors.items[x].label);
                             chart.sensors.items[x].checked = (settings.value("checked","false") == "true")?true:false;
@@ -487,5 +487,9 @@ Rectangle{
         color:"#bb252b31"
     }
 
+    Tutorial{
+        id: tutorial
+        visible: false
+    }
 
 }

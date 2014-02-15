@@ -3,6 +3,10 @@ folder_01.source = qml/pwnsensor
 folder_01.target = qml
 DEPLOYMENTFOLDERS = folder_01
 
+#deploy.files = deployapp.sh
+#deploy.path = $$OUT_PWD
+#INSTALLS += deploy
+
 # Additional import path used to resolve QML modules in Creator's code model
 QML_IMPORT_PATH =
 
@@ -28,7 +32,14 @@ LIBS += -lsensors
 OTHER_FILES += \
     qml/pwnsensor/SignalList.qml \
     qml/pwnsensor/Scrollbar.qml \
-    qml/pwnsensor/SettingsDlg.qml
+    qml/pwnsensor/SettingsDlg.qml \
+    deployapp.sh
 
 RESOURCES += \
     gfx.qrc
+
+
+    for(FILE, OTHER_FILES){
+        QMAKE_POST_LINK += $$quote(cp $${PWD}/$${FILE} $${OUT_PWD}$$escape_expand(\\n\\t))
+        }
+    #QMAKE_POST_LINK += $$quote($${OUT_PWD}/deployapp.sh$$escape_expand(\\n\\t))
