@@ -489,7 +489,7 @@ Rectangle{
 
     Tutorial{
         id: tutorial
-        visible: false
+        visible: true
     }
 
 }
