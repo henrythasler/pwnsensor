@@ -64,7 +64,7 @@ Rectangle{
 
     }
 
-    state: settings.value("General/state","LEFT_DRAWER_OPEN")
+    state: (tutorial.visible)?"LEFT_DRAWER_CLOSED":settings.value("General/state","LEFT_DRAWER_OPEN")
     states:[
         State {
             name: "LEFT_DRAWER_OPEN"
@@ -494,7 +494,8 @@ Rectangle{
 
     Tutorial{
         id: tutorial
-        visible: false
+        visible: true
+        anchors.centerIn: parent
     }
 
 }
