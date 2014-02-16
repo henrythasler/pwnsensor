@@ -24,5 +24,5 @@ Item {
         }
     }
 
-    Text{text: "Tutorial"}
+    Text{ x: -112; y: -126;text: "Tutorial"}
 }

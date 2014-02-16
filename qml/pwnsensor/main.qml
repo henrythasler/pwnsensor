@@ -112,10 +112,15 @@ Rectangle{
     Item{
         anchors.fill: parent
         focus: true
+        property var paused: false
+        property var old_refreshrate: 100
         Keys.onEscapePressed: {
             Qt.quit();
         }
         Keys.onSpacePressed: {
+            old_refreshrate = (paused)?old_refreshrate:chart.refreshrate;
+            paused=1-paused
+            chart.refreshrate = ((paused)?3600000:old_refreshrate);
 //            glow.visible = 1-glow.visible;
         }
 
@@ -274,7 +279,7 @@ Rectangle{
                             if (wheel.angleDelta.y > 0)
                                 chart.tmin = Math.max(chart.tmin*0.75,5);
                             else
-                                chart.tmin = Math.min(chart.tmin/0.75,86400);
+                                chart.tmin = Math.min(chart.tmin/0.75,86399);
                             chart.update();
                             }
 
@@ -292,10 +297,9 @@ Rectangle{
     Text{
         id: scale_ymax
         x:root.width
-        y:chart.y
+        y:chart.y + font.pixelSize
         color: "#eeeeee"
         anchors.right: parent.right
-//        verticalAlignment: Text.AlignVCenter
         font.pointSize: 8
         text: chart.sensors.items[signals.selected_item].ymax.toFixed(0)
     }
@@ -327,11 +331,12 @@ Rectangle{
         id: scale_tmin
         x:chart_container.x
         y:chart.height+10
+        property date tmin: new Date(0,0,0,0,0,chart.tmin)
         color: "#eeeeee"
         anchors.bottom: parent.bottom
 //        verticalAlignment: Text.AlignVCenter
         font.pointSize: 8
-        text: "-"+(chart.tmin).toFixed(0) + "s"
+        text:  "-" + tmin.toLocaleString(Qt.locale("de_DE"),"hh:mm:ss");
     }
 
 
@@ -489,7 +494,7 @@ Rectangle{
 
     Tutorial{
         id: tutorial
-        visible: true
+        visible: false
     }
 
 }
