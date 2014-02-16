@@ -15,6 +15,13 @@ Item {
             y: 205
             text: qsTr("Continue")
         }
+
+        Button {
+            id: button2
+            x: 8
+            y: 205
+            text: qsTr("Close")
+        }
     }
 
     Text{text: "Tutorial"}
