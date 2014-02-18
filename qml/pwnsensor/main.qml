@@ -277,9 +277,9 @@ Rectangle{
                             }
                         else{                                       // zoom time
                             if (wheel.angleDelta.y > 0)
-                                chart.tmin = Math.max(chart.tmin*0.75,5);
+                                chart.tmin = Math.max(chart.tmin*0.7,5);
                             else
-                                chart.tmin = Math.min(chart.tmin/0.75,86399);
+                                chart.tmin = Math.min(chart.tmin/0.7,86399);
                             chart.update();
                             }
 
