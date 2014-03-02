@@ -9,6 +9,7 @@
 #include <QPointF>
 #include <QRectF>
 #include <QFile>
+#include <QStringList>
 
 // LM-Sensors Library Header
 #include <sensors/sensors.h>/* Library initialization and clean-up */

@@ -33,7 +33,8 @@ OTHER_FILES += \
     qml/pwnsensor/SignalList.qml \
     qml/pwnsensor/Scrollbar.qml \
     qml/pwnsensor/SettingsDlg.qml \
-    deployapp.sh
+    deployapp.sh \
+    qml/pwnsensor/Slider.qml
 
 RESOURCES += \
     gfx.qrc

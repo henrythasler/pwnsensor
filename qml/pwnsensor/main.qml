@@ -194,7 +194,8 @@ Rectangle{
 
                 settings.beginGroup("SensorItems");
                 var keys = settings.childGroups();
-//                console.log(keys)
+
+                console.log("main chart.refreshrate="+chart.refreshrate);
 
                 for(var x=0;x<chart.sensors.items.length;x++)
                     {
@@ -494,7 +495,7 @@ Rectangle{
 
     Tutorial{
         id: tutorial
-        visible: true
+        visible: false
         anchors.centerIn: parent
     }
 

@@ -1,7 +1,7 @@
 import QtQuick 2.0
-import QtQuick.Controls 1.1
-import QtQuick.Dialogs 1.0
-import QtQuick.Window 2.1
+//import QtQuick.Controls 1.1
+//import QtQuick.Dialogs 1.1
+//import QtQuick.Window 2.0
 
 Rectangle {
     id: root
@@ -47,7 +47,7 @@ Rectangle {
             id: itemcontainer
             width: list.width; height: 16
             clip: true
-
+/*
             ColorDialog {
                 id: colorDialog
                 title: "Choose a color"
@@ -61,7 +61,7 @@ Rectangle {
                             }
 //                onRejected: { console.log("Rejected") }
             }
-
+*/
             MouseArea{
                 anchors.fill: parent
                 acceptedButtons: Qt.LeftButton | Qt.RightButton
@@ -81,6 +81,7 @@ Rectangle {
             }
             Row {
                 spacing: 5
+/*
                 CheckBox {
                     id: checkBox1
                     anchors.verticalCenter: parent.verticalCenter
@@ -99,6 +100,7 @@ Rectangle {
 
 //                        text: name
                 }
+*/
                 Rectangle{
                     id: colorIndicator
                     width: 12;

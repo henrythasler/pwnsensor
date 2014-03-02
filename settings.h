@@ -5,6 +5,7 @@
 //#include <QDebug>
 #include <QSettings>
 #include <QCoreApplication>
+#include <QStringList>
 
 class appSettings : public QSettings
 {
