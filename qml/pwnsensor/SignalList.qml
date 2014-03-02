@@ -45,7 +45,7 @@ Rectangle {
         id: delegate
         Item{
             id: itemcontainer
-            width: list.width; height: 16
+            width: list.width; height: 20
             clip: true
 /*
             ColorDialog {
@@ -81,26 +81,21 @@ Rectangle {
             }
             Row {
                 spacing: 5
-/*
-                CheckBox {
+                Item{width:2;height: 2}
+
+                Checkbox {
                     id: checkBox1
+                    height: 16
+                    width: 16
                     anchors.verticalCenter: parent.verticalCenter
                     checked: sensors.items[index].checked
 
-                    onClicked:{
+                    onCheckedChanged: {
                         sensors.items[index].checked = checked;
                         chart.update();
-//                        if(checked)
-//                            console.log("adding " + index);
-//                        else
-//                            console.log("removing " + index);
-//                        list.currentIndex=index;
-
                     }
-
-//                        text: name
                 }
-*/
+
                 Rectangle{
                     id: colorIndicator
                     width: 12;

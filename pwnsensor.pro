@@ -34,7 +34,8 @@ OTHER_FILES += \
     qml/pwnsensor/Scrollbar.qml \
     qml/pwnsensor/SettingsDlg.qml \
     deployapp.sh \
-    qml/pwnsensor/Slider.qml
+    qml/pwnsensor/Slider.qml \
+    qml/pwnsensor/Checkbox.qml
 
 RESOURCES += \
     gfx.qrc

@@ -32,7 +32,7 @@ Rectangle {
         onValueChanged: {
             for(var x=0;x<sensors.items.length;x++)
                  {
-                 sensors.items[x].width = value;
+                 sensors.items[x].width = Math.round(value);
                  }
             chart.update();
         }
@@ -60,7 +60,7 @@ Rectangle {
         maximum: 5000
         minimum: 100
         onValueChanged: {
-            chart.refreshrate = value
+            chart.refreshrate = Math.round(value);
         }
         Binding { target: refresh_slider; property: "value"; value: chart.refreshrate; when: !refresh_slider.dragActive;}
 //        Component.onCompleted: {console.log("chart.refreshrate="+chart.refreshrate);value = chart.refreshrate;}
@@ -86,7 +86,7 @@ Rectangle {
         maximum: 5000
         minimum: 100
         onValueChanged: {
-            chart.samplerate = value
+            chart.samplerate = Math.round(value);
         }
         Binding { target: sample_slider; property: "value"; value: chart.samplerate; when: !sample_slider.dragActive;}
 //        Component.onCompleted: value = chart.samplerate;
