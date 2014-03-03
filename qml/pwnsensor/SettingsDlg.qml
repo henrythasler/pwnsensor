@@ -122,7 +122,7 @@ Rectangle {
                 width: linewidth_slider.width;
                 color:"#eeeeee";
                 wrapMode: Text.WordWrap
-                text:"<b>About pwnsensor</b><br>by Henry Thasler<br>pwnsensor@thasler.org<br>";
+                text:"<b>About pwnsensor</b><br>created by Henry Thasler<br>pwnsensor@thasler.org<br>";
             }
 
             Text{color:"#eeeeee";text:"Debug Info";font.bold: true}

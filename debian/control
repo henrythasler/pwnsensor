@@ -1,0 +1,20 @@
+Source: pwnsensor
+Section: utils
+Priority: optional
+Maintainer: Henry Thasler <launchpad@thasler.org>
+Build-Depends: debhelper (>= 9),
+               qt5-default,
+               qtbase5-dev (>= 5),
+               qtquick1-5-dev,
+               qtdeclarative5-dev,
+               libsensors4-dev
+Standards-Version: 3.9.4
+Homepage: <insert the upstream URL, if relevant>
+#Vcs-Git: git://git.debian.org/collab-maint/pwnsensor.git
+#Vcs-Browser: http://git.debian.org/?p=collab-maint/pwnsensor.git;a=summary
+
+Package: pwnsensor
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, qtdeclarative5-qtquick2-plugin
+Description: sensor monitoring app
+ display and evaluate your computers sensor data

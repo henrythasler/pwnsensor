@@ -4,6 +4,15 @@ import sensors 1.0
 //import QtQuick.LocalStorage 2.0
 //import "storage.js" as Storage
 
+/* colorset
+  #252b31 - dark grey, used as background
+  #eeeeee - light grey, used for "white" text
+  #424a51 - light grey-blue, used for grid lines
+  #a5a5a5 - medium light grey with transparency,
+  #ffa500 - orange with transparency
+*/
+
+
 Rectangle{
     id: root
     width: 640
@@ -194,8 +203,6 @@ Rectangle{
 
                 settings.beginGroup("SensorItems");
                 var keys = settings.childGroups();
-
-                console.log("main chart.refreshrate="+chart.refreshrate);
 
                 for(var x=0;x<chart.sensors.items.length;x++)
                     {

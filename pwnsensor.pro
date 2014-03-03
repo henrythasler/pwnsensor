@@ -33,7 +33,7 @@ OTHER_FILES += \
     qml/pwnsensor/SignalList.qml \
     qml/pwnsensor/Scrollbar.qml \
     qml/pwnsensor/SettingsDlg.qml \
-    deployapp.sh \
+#    deployapp.sh \
     qml/pwnsensor/Slider.qml \
     qml/pwnsensor/Checkbox.qml
 
@@ -41,7 +41,6 @@ RESOURCES += \
     gfx.qrc
 
 
-    for(FILE, OTHER_FILES){
-        QMAKE_POST_LINK += $$quote(cp $${PWD}/$${FILE} $${OUT_PWD}$$escape_expand(\\n\\t))
-        }
-    #QMAKE_POST_LINK += $$quote($${OUT_PWD}/deployapp.sh$$escape_expand(\\n\\t))
+#    for(FILE, OTHER_FILES){
+#        QMAKE_POST_LINK += $$quote(cp -n $${PWD}/$${FILE} $${OUT_PWD}$$escape_expand(\\n\\t))
+#        }

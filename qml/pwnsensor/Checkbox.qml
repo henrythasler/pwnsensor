@@ -60,7 +60,7 @@ Item {
             Rectangle {
                 width: checkbox.width-mark; height: checkbox.height-mark;
                 radius: 3
-                color: "black";
+                color: "#424a51";
                 anchors.centerIn: parent
                 visible: checkbox.checked;
             }
