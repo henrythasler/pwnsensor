@@ -44,6 +44,7 @@ import QtQuick 2.0
 Item {
     id: checkbox
     property bool checked // required variable
+    property string text
     width: 12
     height: 12
     property int mark: 6
@@ -65,6 +66,7 @@ Item {
                 visible: checkbox.checked;
             }
     }
+    Text{text: checkbox.text}
 
     MouseArea {
         anchors.fill: parent

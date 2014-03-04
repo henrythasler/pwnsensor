@@ -1,3 +1,21 @@
+pwnsensor (0.1-1ubuntu13) saucy; urgency=low
+
+  * debian/control: added dependency libqt5svg5
+
+ -- Henry Thasler <henry@thasler.de>  Tue, 04 Mar 2014 09:39:06 +0100
+
+pwnsensor (0.1-1ubuntu12) saucy; urgency=low
+
+  * debian/control: added homepage
+
+ -- Henry Thasler <henry@thasler.de>  Mon, 03 Mar 2014 21:07:01 +0100
+
+pwnsensor (0.1-1ubuntu11) saucy; urgency=low
+
+  * minor UI changes
+
+ -- Henry Thasler <henry@thasler.de>  Mon, 03 Mar 2014 20:56:47 +0100
+
 pwnsensor (0.1-1ubuntu10) saucy; urgency=low
 
   * pwnsensor.desktop: changed Exec entry

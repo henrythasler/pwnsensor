@@ -83,7 +83,7 @@ Rectangle {
                 spacing: 5
                 Item{width:2;height: 2}
 
-                Checkbox {
+                CheckBox {
                     id: checkBox1
                     height: 16
                     width: 16
@@ -108,7 +108,19 @@ Rectangle {
                         id: leftdrawerMouseArea
                         anchors.fill:parent
                         onClicked:{
-                            colorDialog.open()
+                            var colorcomponent = Qt.createComponent("ColorDialog.qml");
+                            var colordialog;
+                            if (colorcomponent.status == Component.Ready)
+                                {
+                                colordialog = colorcomponent.createObject(root, {currentcolor: itemcolor, title: "Choose a color"});
+                                colordialog.accepted.connect(function(newColor){
+//                                    console.log("clicked")
+                                    sensors.items[index].color=newColor;
+                                    colorIndicator.color = sensors.items[index].color;
+                                    chart.update()
+                                    })
+                                }
+                            else console.log("ColorDialog.qml could not be loaded.")
                         }
                     }
                 }
