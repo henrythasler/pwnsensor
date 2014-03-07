@@ -103,20 +103,22 @@ Rectangle {
                     border.width: 1;
                     border.color:"black" ;
                     anchors.verticalCenter: parent.verticalCenter;
-                    color: itemcolor;
+                    property var current_color: itemcolor
+                    color: current_color;
+
                     MouseArea{
                         id: leftdrawerMouseArea
                         anchors.fill:parent
                         onClicked:{
                             var colorcomponent = Qt.createComponent("ColorDialog.qml");
+
                             var colordialog;
                             if (colorcomponent.status == Component.Ready)
                                 {
-                                colordialog = colorcomponent.createObject(root, {currentcolor: itemcolor, title: "Choose a color"});
+                                colordialog = colorcomponent.createObject(root, {currentcolor: colorIndicator.current_color, color: "#252b31", title: "Choose a color"});
                                 colordialog.accepted.connect(function(newColor){
-//                                    console.log("clicked")
-                                    sensors.items[index].color=newColor;
-                                    colorIndicator.color = sensors.items[index].color;
+                                    colorIndicator.current_color = newColor;
+                                    sensors.items[index].color=colorIndicator.current_color;
                                     chart.update()
                                     })
                                 }

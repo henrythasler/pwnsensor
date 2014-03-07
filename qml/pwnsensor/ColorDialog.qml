@@ -40,6 +40,7 @@ Window{
     Row{
         x: 0
         y: 162
+        width: parent.width
         spacing: 2
         Rectangle{
             id: current;
