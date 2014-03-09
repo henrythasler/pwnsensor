@@ -29,7 +29,7 @@ int main(int argc, char *argv[])
 //    format.setStereo(true);
     viewer.setFormat(format);
 
-    viewer.setTitle("pwnsensor alpha-3");
+    viewer.setTitle("pwnsensor beta-1");
     viewer.setMainQmlFile(QStringLiteral("qml/pwnsensor/main.qml"));
     viewer.showExpanded();
 

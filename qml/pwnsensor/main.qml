@@ -1,8 +1,15 @@
 import QtQuick 2.0
 //import QtGraphicalEffects 1.0
 import sensors 1.0
-//import QtQuick.LocalStorage 2.0
-//import "storage.js" as Storage
+
+/* colorset
+  #252b31 - dark grey, used as background
+  #eeeeee - light grey, used for "white" text
+  #424a51 - light grey-blue, used for grid lines
+  #a5a5a5 - medium light grey with transparency,
+  #ffa500 - orange with transparency
+*/
+
 
 Rectangle{
     id: root
@@ -194,7 +201,6 @@ Rectangle{
 
                 settings.beginGroup("SensorItems");
                 var keys = settings.childGroups();
-//                console.log(keys)
 
                 for(var x=0;x<chart.sensors.items.length;x++)
                     {
@@ -494,8 +500,7 @@ Rectangle{
 
     Tutorial{
         id: tutorial
-        visible: true
+        visible: false
         anchors.centerIn: parent
     }
-
 }

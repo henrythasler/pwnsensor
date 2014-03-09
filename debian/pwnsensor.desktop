@@ -1,0 +1,11 @@
+[Desktop Entry]
+Version=0.1
+Name=pwnsensor
+GenericName=pwnsensor sensor monitoring app
+Comment=display and evaluate your computers sensor data
+Exec=/opt/pwnsensor/bin/pwnsensor
+Terminal=false
+Type=Application
+StartupNotify=true
+Icon=pwnsensor80
+Categories=System;Monitor;Qt;

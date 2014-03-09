@@ -1,0 +1,79 @@
+pwnsensor (0.1-1ubuntu13) saucy; urgency=low
+
+  * debian/control: added dependency libqt5svg5
+
+ -- Henry Thasler <henry@thasler.de>  Tue, 04 Mar 2014 09:39:06 +0100
+
+pwnsensor (0.1-1ubuntu12) saucy; urgency=low
+
+  * debian/control: added homepage
+
+ -- Henry Thasler <henry@thasler.de>  Mon, 03 Mar 2014 21:07:01 +0100
+
+pwnsensor (0.1-1ubuntu11) saucy; urgency=low
+
+  * minor UI changes
+
+ -- Henry Thasler <henry@thasler.de>  Mon, 03 Mar 2014 20:56:47 +0100
+
+pwnsensor (0.1-1ubuntu10) saucy; urgency=low
+
+  * pwnsensor.desktop: changed Exec entry
+
+ -- Henry Thasler <henry@thasler.de>  Mon, 03 Mar 2014 20:42:24 +0100
+
+pwnsensor (0.1-1ubuntu9) saucy; urgency=low
+
+  * debian/install: removed copy executable in /usr/bin
+  * pwnsensor.desktop: changed Exec entry
+
+ -- Henry Thasler <henry@thasler.de>  Mon, 03 Mar 2014 20:25:48 +0100
+
+pwnsensor (0.1-1ubuntu8) saucy; urgency=low
+
+  * in debian/control: changed Priority to optional 
+
+ -- Henry Thasler <henry@thasler.de>  Mon, 03 Mar 2014 19:43:08 +0100
+
+pwnsensor (0.1-1ubuntu7) saucy; urgency=low
+
+  * moved pwnsensor.desktop to debian subdir
+  * added pwnsensor.install
+
+ -- Henry Thasler <henry@thasler.de>  Mon, 03 Mar 2014 13:35:25 +0100
+
+pwnsensor (0.1-1ubuntu6) saucy; urgency=low
+
+  * added dependency: qtdeclarative5-qtquick2-plugin
+
+ -- Henry Thasler <henry@thasler.de>  Mon, 03 Mar 2014 13:25:29 +0100
+
+pwnsensor (0.1-1ubuntu5) saucy; urgency=low
+
+  * include orig.tar.gz and build for saucy
+
+ -- Henry Thasler <henry@thasler.de>  Sun, 02 Mar 2014 22:29:52 +0100
+
+pwnsensor (0.1-1ubuntu4) raring; urgency=low
+
+  * debian/control: Section set to utils
+
+ -- Henry Thasler <henry@thasler.de>  Sun, 02 Mar 2014 22:20:06 +0100
+
+pwnsensor (0.1-1ubuntu3) raring; urgency=low
+
+  * debian/control: Section set to System
+
+ -- Henry Thasler <henry@thasler.de>  Sun, 02 Mar 2014 22:12:36 +0100
+
+pwnsensor (0.1-1ubuntu2) raring; urgency=low
+
+  * removed copy deployapp.sh after build 
+
+ -- Henry Thasler <henry@thasler.de>  Sun, 02 Mar 2014 22:05:47 +0100
+
+pwnsensor (0.1-1ubuntu1) raring; urgency=low
+
+  * Initial release beta 1
+
+ -- Henry Thasler <henry@thasler.de>  Sun, 02 Mar 2014 21:48:54 +0100

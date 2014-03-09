@@ -1,7 +1,7 @@
 import QtQuick 2.0
-import QtQuick.Controls 1.1
-import QtQuick.Dialogs 1.0
-import QtQuick.Window 2.1
+//import QtQuick.Controls 1.1
+//import QtQuick.Dialogs 1.1
+//import QtQuick.Window 2.0
 
 Rectangle {
     id: root
@@ -13,6 +13,7 @@ Rectangle {
     width: 120;
     height: parent.height
     color: "yellow"
+    property var colorpickeropen:false
 
     ListModel {
         id: model
@@ -45,22 +46,8 @@ Rectangle {
         id: delegate
         Item{
             id: itemcontainer
-            width: list.width; height: 16
+            width: list.width; height: 20
             clip: true
-
-            ColorDialog {
-                id: colorDialog
-                title: "Choose a color"
-                color: itemcolor
-//                showAlphaChannel: true
-                onAccepted: {
-                            sensors.items[index].color=currentColor;
-                            colorIndicator.color = sensors.items[index].color;
-                            chart.update();
-                            console.log(colorDialog.currentColor);
-                            }
-//                onRejected: { console.log("Rejected") }
-            }
 
             MouseArea{
                 anchors.fill: parent
@@ -81,24 +68,21 @@ Rectangle {
             }
             Row {
                 spacing: 5
+                Item{width:2;height: 2}
+
                 CheckBox {
                     id: checkBox1
+                    height: 16
+                    width: 16
                     anchors.verticalCenter: parent.verticalCenter
                     checked: sensors.items[index].checked
 
-                    onClicked:{
+                    onCheckedChanged: {
                         sensors.items[index].checked = checked;
                         chart.update();
-//                        if(checked)
-//                            console.log("adding " + index);
-//                        else
-//                            console.log("removing " + index);
-//                        list.currentIndex=index;
-
                     }
-
-//                        text: name
                 }
+
                 Rectangle{
                     id: colorIndicator
                     width: 12;
@@ -106,12 +90,33 @@ Rectangle {
                     border.width: 1;
                     border.color:"black" ;
                     anchors.verticalCenter: parent.verticalCenter;
-                    color: itemcolor;
+                    property var current_color: itemcolor
+                    color: current_color;
+
                     MouseArea{
                         id: leftdrawerMouseArea
                         anchors.fill:parent
                         onClicked:{
-                            colorDialog.open()
+                            var colorcomponent = Qt.createComponent("ColorPicker.qml");
+                            if (colorcomponent.status == Component.Ready)
+                                {
+                                if(!colorpickeropen){
+                                    colorpickeropen=true;
+                                    var colordialog = colorcomponent.createObject(root, {startcol: colorIndicator.current_color, color: "#252b31", x: colorIndicator.x+colorIndicator.width, y: index*itemcontainer.height, width:320, height:200});
+                                    colordialog.accepted.connect(function(newColor){
+                                        colorIndicator.current_color = newColor;
+                                        sensors.items[index].color=colorIndicator.current_color;
+                                        chart.update()
+                                        colorpickeropen=false;
+                                        colordialog.destroy();
+                                        })
+                                    colordialog.cancel.connect(function(){
+                                        colorpickeropen=false;
+                                        colordialog.destroy();
+                                        })
+                                    }
+                                }
+                            else console.log("ColorDialog.qml could not be loaded.")
                         }
                     }
                 }

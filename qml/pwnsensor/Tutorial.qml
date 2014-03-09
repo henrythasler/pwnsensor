@@ -1,5 +1,5 @@
 import QtQuick 2.0
-import QtQuick.Controls 1.1
+//import QtQuick.Controls 1.1
 
 Item {
     id: root
@@ -47,28 +47,37 @@ Item {
             font.pixelSize: 14
         }
 
-        Button {
+        Text {
             id: button2
             x: 8
             y: 205
             text: qsTr("Close")
-            onClicked: {root.visible=false;}
+            MouseArea{
+                anchors.fill: parent
+                onClicked: {root.visible=false;}
+            }
         }
 
-        Button {
+        Text {
             id: button3
             x: 212
             y: 205
             text: qsTr("Back")
-            onClicked: { if(root.state > 1) root.state--; }
+            MouseArea{
+                anchors.fill: parent
+                onClicked: { if(root.state > 1) root.state--; }
+            }
         }
 
-        Button {
+        Text {
             id: button1
             x: 303
             y: 205
             text: qsTr("Continue")
-            onClicked: { if(root.state < root.states.length) root.state++; }
+            MouseArea{
+                anchors.fill: parent
+                onClicked: { if(root.state < root.states.length) root.state++; }
+            }
         }
 
         Text{ id: text_step1; x: 9; y: 37; width: 378; height: 152; wrapMode: Text.WordWrap; visible: false;

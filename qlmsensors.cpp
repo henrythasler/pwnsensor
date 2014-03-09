@@ -42,12 +42,11 @@ bool QLmSensors::Init()
 #define BUF_SIZE 200
 static char buf[BUF_SIZE];
 
-int chip_nr, a, b;
+int chip_nr, a;
 const sensors_chip_name *chip;
 const sensors_subfeature *sub;
 const sensors_feature *feature;
 const char *adap=NULL;
-char *label;
 
 
 // add CPU load
@@ -63,6 +62,7 @@ char *label;
     new_item->ymin=0;
     new_item->ymax=105;
     new_item->unit = "%";
+    new_item->checked=true;
     m_sensorItems.append(new_item);
 
 
