@@ -14,7 +14,7 @@ Item {
         Rectangle{
             id: highlight
             anchors.fill: parent
-            color:"#55ffffff"
+            color:"#77ffffff"
             visible: mouse.containsMouse
         }
 

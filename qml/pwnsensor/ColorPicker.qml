@@ -1,35 +1,31 @@
 import QtQuick 2.0
 import "Assets"
 
-/* based on:  http://blog.ruslans.com/2010/12/cute-quick-colorpicker.html
-
-
-*/
+// based on
+// [1] http://blog.ruslans.com/2010/12/cute-quick-colorpicker.html
 
 Rectangle {
     id: root
-    width: 100
-    height: 100
-    property real hue: 0.5
-    property real sat: 1.0
-    property real bri: 1.0
-    property var col: "blue"
-    property color startcol: "white"
+    width: 400
+    height: 400
+    property var hsb
+    property var col: "blue"    // current color
+    property color startcol: "white"    // initial color
     border.color: "#eeeeee"
-
+    radius: 8
 
     signal accepted(color newcol)
     signal cancel
 
-
-    function hsba(h, s, b, a) {
-        var lightness = (2 - s)*b;
-        var satHSL = s*b/((lightness <= 1) ? lightness : 2 - lightness);
+    function hsbToColor(hsb) {
+        var lightness = (2 - hsb.s)*hsb.b;
+        var satHSL = hsb.s*hsb.b/((lightness <= 1) ? lightness : 2 - lightness);
         lightness /= 2;
-        return Qt.hsla(h, satHSL, lightness, a);
+        return Qt.hsla(hsb.h, satHSL, lightness, 1.0);
     }
 
 //    from https://github.com/bgrins/TinyColor
+/*
     function rgbToHsl(r, g, b) {
         var max = Math.max(r, g, b), min = Math.min(r, g, b);
         var h, s, l = (max + min) / 2;
@@ -49,15 +45,35 @@ Rectangle {
         }
         return { h: h, s: s, l: l };
     }
+*/
+
+// based on
+//  [2] https://github.com/bgrins/TinyColor
+//  [3] http://en.wikipedia.org/wiki/HSL_and_HSV
+    function rgbToHsb(rgb){
+        var max = Math.max(rgb.r, rgb.g, rgb.b), min = Math.min(rgb.r, rgb.g, rgb.b);
+        var C = max-min;
+        var l = (max+min)/2.
+        var h;
+
+        if(C==0){
+            h=0
+        }
+        else{
+            var s = l > 0.5 ? C / (2 - max - min) : C / (max + min);
+            switch(max) {
+                case rgb.r: h = (rgb.g - rgb.b) / C + (rgb.g < rgb.b ? 6 : 0); break;
+                case rgb.g: h = (rgb.b - rgb.r) / C + 2; break;
+                case rgb.b: h = (rgb.r - rgb.g) / C + 4; break;
+            }
+            h /= 6;
+        }
+        return { h: h, s: (C==0)?0.:C/max, b: max };
+    }
 
     Component.onCompleted: {
-        var hsl = rgbToHsl(startcol.r, startcol.g, startcol.b);
-//        console.log(hsl.h + " " + hsl.s + " " + hsl.l)
-        root.hue = hsl.h;
-        root.sat = hsl.s;
-        root.bri = hsl.l*2/(2-hsl.s);
-//        console.log(hue + " " + sat + " " + bri)
-        root.col=hsba(root.hue, root.sat, root.bri,1.)
+        root.hsb = rgbToHsb(root.startcol);
+        root.col = hsbToColor(root.hsb);
     }
 
 
@@ -70,13 +86,13 @@ Rectangle {
         anchors.margins: 10
         width: height
 
-        radius: 7
+        radius: 8
         border_width: 2
-        col: hsba(root.hue, 1., 1., 1.)
+        col: hsbToColor(root.hsb)
 
-        onChanged: {root.sat=newsat; root.bri=newbri; root.col=hsba(root.hue, root.sat, root.bri,1.)}
-        Binding { target: sbPicker; property: "sat"; value: root.sat; when: !sbPicker.dragActive;}
-        Binding { target: sbPicker; property: "bri"; value: root.bri; when: !sbPicker.dragActive;}
+        onChanged: {root.hsb.s=newsat; root.hsb.b=newbri; root.col=hsbToColor(root.hsb)}
+        Binding { target: sbPicker; property: "sat"; value: root.hsb.s; when: !sbPicker.dragActive;}
+        Binding { target: sbPicker; property: "bri"; value: root.hsb.b; when: !sbPicker.dragActive;}
 
     }
 
@@ -87,8 +103,12 @@ Rectangle {
         anchors.left: sbPicker.right
         anchors.margins: 10
         width: 24
-        onChanged: {root.hue=newhue;col=hsba(root.hue, root.sat, root.bri,1.)}
-        Binding { target: huePicker; property: "currentHue"; value: root.hue; when: !huePicker.dragActive;}
+
+        radius: 8
+        border_width: 2
+
+        onChanged: {root.hsb.h=newhue;col=hsbToColor(root.hsb)}
+        Binding { target: huePicker; property: "currentHue"; value: root.hsb.h; when: !huePicker.dragActive;}
     }
 
     Rectangle{
@@ -99,6 +119,16 @@ Rectangle {
         anchors.margins: 10
         height: 32
         color: root.col;
+    }
+
+    Text{
+        id: rgb
+        anchors.top: current.bottom
+        anchors.left: huePicker.right
+        anchors.right: parent.right
+        anchors.margins: 10
+        color: "#eeeeee"
+        text: root.col
     }
 
     Button{

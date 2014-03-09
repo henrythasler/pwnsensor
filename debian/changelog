@@ -1,6 +1,13 @@
+pwnsensor (0.1-1ubuntu14) saucy; urgency=low
+
+  * color picker: design and functionality improved
+
+ -- Henry Thasler <henry@thasler.de>  Sun, 09 Mar 2014 20:56:20 +0100
+
 pwnsensor (0.1-1ubuntu13) saucy; urgency=low
 
   * debian/control: added dependency libqt5svg5
+  * added color picker
 
  -- Henry Thasler <henry@thasler.de>  Tue, 04 Mar 2014 09:39:06 +0100
 

@@ -44,7 +44,6 @@ Item{
     }
     MouseArea{
         anchors.fill: parent
-        cursorShape: Qt.CrossCursor
         onClicked: {
             picker.x=mouseX-root.radius;
             picker.y=mouseY-root.radius;
