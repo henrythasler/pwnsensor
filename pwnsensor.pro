@@ -37,7 +37,6 @@ OTHER_FILES += \
     qml/pwnsensor/Slider.qml \
     qml/pwnsensor/CheckBox.qml \
     qml/pwnsensor/Button.qml \
-    qml/pwnsensor/ColorDialog.qml
 
 RESOURCES += \
     gfx.qrc

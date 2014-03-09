@@ -13,6 +13,7 @@ Rectangle {
     width: 120;
     height: parent.height
     color: "yellow"
+    property var colorpickeropen:false
 
     ListModel {
         id: model
@@ -47,21 +48,7 @@ Rectangle {
             id: itemcontainer
             width: list.width; height: 20
             clip: true
-/*
-            ColorDialog {
-                id: colorDialog
-                title: "Choose a color"
-                color: itemcolor
-//                showAlphaChannel: true
-                onAccepted: {
-                            sensors.items[index].color=currentColor;
-                            colorIndicator.color = sensors.items[index].color;
-                            chart.update();
-                            console.log(colorDialog.currentColor);
-                            }
-//                onRejected: { console.log("Rejected") }
-            }
-*/
+
             MouseArea{
                 anchors.fill: parent
                 acceptedButtons: Qt.LeftButton | Qt.RightButton
@@ -110,17 +97,24 @@ Rectangle {
                         id: leftdrawerMouseArea
                         anchors.fill:parent
                         onClicked:{
-                            var colorcomponent = Qt.createComponent("ColorDialog.qml");
-
-                            var colordialog;
+                            var colorcomponent = Qt.createComponent("ColorPicker.qml");
                             if (colorcomponent.status == Component.Ready)
                                 {
-                                colordialog = colorcomponent.createObject(root, {currentcolor: colorIndicator.current_color, color: "#252b31", title: "Choose a color"});
-                                colordialog.accepted.connect(function(newColor){
-                                    colorIndicator.current_color = newColor;
-                                    sensors.items[index].color=colorIndicator.current_color;
-                                    chart.update()
-                                    })
+                                if(!colorpickeropen){
+                                    colorpickeropen=true;
+                                    var colordialog = colorcomponent.createObject(root, {startcol: colorIndicator.current_color, color: "#252b31", x: colorIndicator.x+colorIndicator.width, y: index*itemcontainer.height, width:320, height:200});
+                                    colordialog.accepted.connect(function(newColor){
+                                        colorIndicator.current_color = newColor;
+                                        sensors.items[index].color=colorIndicator.current_color;
+                                        chart.update()
+                                        colorpickeropen=false;
+                                        colordialog.destroy();
+                                        })
+                                    colordialog.cancel.connect(function(){
+                                        colorpickeropen=false;
+                                        colordialog.destroy();
+                                        })
+                                    }
                                 }
                             else console.log("ColorDialog.qml could not be loaded.")
                         }

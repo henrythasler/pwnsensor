@@ -1,8 +1,6 @@
 import QtQuick 2.0
 //import QtGraphicalEffects 1.0
 import sensors 1.0
-//import QtQuick.LocalStorage 2.0
-//import "storage.js" as Storage
 
 /* colorset
   #252b31 - dark grey, used as background
@@ -505,5 +503,4 @@ Rectangle{
         visible: false
         anchors.centerIn: parent
     }
-
 }
