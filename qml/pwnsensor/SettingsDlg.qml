@@ -1,5 +1,5 @@
 import QtQuick 2.0
-//import QtQuick.Controls 1.1
+import "Assets"
 
 Rectangle {
     property var sensors: NULL
@@ -17,7 +17,7 @@ Rectangle {
         x: 8
         y: 8
         color: "#eeeeee"
-        text: "<b>Line Width:</b> " + linewidth_slider.value.toFixed(0) + "px"
+        text: "<b>Line Width:</b> " + sensors.items[0].width.toFixed(0) + "px"
     }
     Slider {
         id: linewidth_slider
@@ -25,14 +25,16 @@ Rectangle {
         y: 25
         width: parent.width - 2*x
         height: width_label.y+16
-//        tickmarksEnabled: false
-//        stepSize: 1
+        border_width : 1
+        handle_width : 24
+        radius: 8
+        stepSize: 1
         maximum: 10
         minimum: 1
-        onValueChanged: {
+        onChanged: {
             for(var x=0;x<sensors.items.length;x++)
                  {
-                 sensors.items[x].width = Math.round(value);
+                 sensors.items[x].width = newval;
                  }
             chart.update();
         }
@@ -46,7 +48,7 @@ Rectangle {
         x: 8
         y: 68
         color: "#eeeeee"
-        text: "<b>Refreshrate:</b> " + refresh_slider.value.toFixed(0) + "ms"
+        text: "<b>Refreshrate:</b> " + chart.refreshrate.toFixed(0) + "ms"
     }
 
     Slider {
@@ -55,12 +57,14 @@ Rectangle {
         y: refresh_label.y+16
         width: linewidth_slider.width
         height: linewidth_slider.height
-//        tickmarksEnabled: false
-//        stepSize: 100
+        border_width : 1
+        handle_width : 24
+        radius: 8
+        stepSize: 100
         maximum: 5000
         minimum: 100
-        onValueChanged: {
-            chart.refreshrate = Math.round(value);
+        onChanged: {
+            chart.refreshrate = Math.round(newval);
         }
         Binding { target: refresh_slider; property: "value"; value: chart.refreshrate; when: !refresh_slider.dragActive;}
 //        Component.onCompleted: {console.log("chart.refreshrate="+chart.refreshrate);value = chart.refreshrate;}
@@ -72,7 +76,7 @@ Rectangle {
         x: 8
         y: 128
         color: "#eeeeee"
-        text: "<b>Samplerate:</b> " + sample_slider.value.toFixed(0) + "ms"
+        text: "<b>Samplerate:</b> " + chart.samplerate.toFixed(0) + "ms"
     }
 
     Slider {
@@ -81,12 +85,14 @@ Rectangle {
         y: sample_label.y+16
         width: linewidth_slider.width
         height: linewidth_slider.height
-//        tickmarksEnabled: false
-//        stepSize: 100
+        border_width : 1
+        handle_width : 24
+        radius: 8
+        stepSize: 100
         maximum: 5000
         minimum: 100
-        onValueChanged: {
-            chart.samplerate = Math.round(value);
+        onChanged: {
+            chart.samplerate = Math.round(newval);
         }
         Binding { target: sample_slider; property: "value"; value: chart.samplerate; when: !sample_slider.dragActive;}
 //        Component.onCompleted: value = chart.samplerate;

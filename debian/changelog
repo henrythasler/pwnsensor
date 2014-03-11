@@ -1,6 +1,7 @@
 pwnsensor (0.1-1ubuntu14) saucy; urgency=low
 
   * color picker: design and functionality improved
+  * Slider: completely reworked, added stepsize property
 
  -- Henry Thasler <henry@thasler.de>  Sun, 09 Mar 2014 20:56:20 +0100
 

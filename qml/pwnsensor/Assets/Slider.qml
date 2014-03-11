@@ -40,55 +40,70 @@
 ****************************************************************************/
 
 import QtQuick 2.0
+import "utils.js" as Utils
 
 Item {
-    id: slider; width: 400; height: 16
+    id: root;
 
-    // value is read/write.
+    property real radius: 0
+    property real border_width: 0
+    property real handle_width: 5
     property bool dragActive: false
+
     property real value: 1
-    onValueChanged: updatePos();
     property real maximum: 1
     property real minimum: 1
-    property int xMax: width - handle.width - 4
-    onXMaxChanged: updatePos();
-    onMinimumChanged: updatePos();
+    property real stepSize: 1
 
-    function updatePos() {
-        if (maximum > minimum) {
-            var pos = 2 + (value - minimum) * slider.xMax / (maximum - minimum);
-            pos = Math.min(pos, width - handle.width - 2);
-            pos = Math.max(pos, 2);
-            handle.x = pos;
-        } else {
-            handle.x = 2;
-        }
+    signal changed(real newval)
+
+    onValueChanged: {
+        var hrange = root.width-2*root.border_width-handle.width;
+        var steps = (root.maximum-root.minimum)/root.stepSize;
+        var hstepsize = hrange/steps;
+        handle.x = (value-root.minimum)/ root.stepSize * hstepsize+root.border_width;
     }
 
     Rectangle {
         anchors.fill: parent
-        border.color: "#eeeeeeee"; border.width: 1; radius: 8
+        border.color: "#eeeeeeee";
+        border.width: root.border_width;
+        radius: root.radius;
         gradient: Gradient {
-            GradientStop { position: 0.0; color: "#66343434" }
+            GradientStop { position: 0.0; color: "#66666666" }
             GradientStop { position: 1.0; color: "#66000000" }
         }
     }
 
     Rectangle {
         id: handle; smooth: true
-        y: 2; width: 30; height: slider.height-4; radius: 6
+        x: root.border_width;
+        y: root.border_width;
+        width: root.handle_width;
+        height: root.height-2*root.border_width;
+        radius: root.radius-root.border_width;
+        border.color: "grey"
         gradient: Gradient {
-            GradientStop { position: 0.0; color: "lightgray" }
-            GradientStop { position: 1.0; color: "gray" }
+            GradientStop { position: 0.0; color: "#eeeeee" }
+            GradientStop { position: 1.0; color: "#aaaaaa" }
         }
+    }
 
-        MouseArea {
-            id: mouse
-            anchors.fill: parent; drag.target: parent
-            drag.axis: Drag.XAxis; drag.minimumX: 2; drag.maximumX: slider.xMax+2
-            onPositionChanged: { value = (maximum - minimum) * (handle.x-2) / slider.xMax + minimum; }
-            onPressed: dragActive=true;
-            onReleased: dragActive=false;
+    MouseArea{
+        anchors.fill: parent
+        onPressed: dragActive=true;
+        onReleased: dragActive=false;
+        onPositionChanged: {
+            if (mouse.buttons & Qt.LeftButton)
+            {
+                var hrange = root.width-2*root.border_width-handle.width;
+                var steps = (root.maximum-root.minimum)/root.stepSize;
+                var hstepsize = hrange/steps;
+                var new_val = Math.round(Utils.clamp(mouse.x-handle.width/2,root.border_width,root.width-root.border_width-handle.width)/hrange * steps);
+                root.changed(root.minimum+new_val*root.stepSize);
+                handle.x = new_val * hstepsize+root.border_width;
+//                console.log(new_val)
+            }
         }
     }
 }

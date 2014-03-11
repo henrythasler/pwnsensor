@@ -1,4 +1,5 @@
 import QtQuick 2.0
+import "utils.js" as Utils
 
 Item {
     id: root
@@ -30,8 +31,11 @@ Item {
 
     MouseArea{
         anchors.fill: parent
-        onClicked: {
-            picker.y=mouseY-root.radius
+        onPressed: dragActive=true;
+        onReleased: dragActive=false;
+        onClicked: onPositionChanged(mouse)
+        onPositionChanged: {
+            picker.y=Utils.clamp(mouseY,0,root.height)-root.radius
             root.changed(1-(picker.y+root.radius)/root.height)
         }
     }
@@ -48,16 +52,7 @@ Item {
 
         MouseArea{
             anchors.fill: parent
-            drag.target: picker
             cursorShape: Qt.OpenHandCursor
-            drag.axis: Drag.YAxis
-            drag.minimumY: -root.radius
-            drag.maximumY: root.height-root.radius
-            onPositionChanged: {
-                root.changed(1-(picker.y+root.radius)/root.height)
-            }
-            onPressed: dragActive=true;
-            onReleased: dragActive=false;
         }
 
         Rectangle{
