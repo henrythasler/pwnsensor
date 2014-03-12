@@ -6,8 +6,8 @@ import sensors 1.0
   #252b31 - dark grey, used as background
   #eeeeee - light grey, used for "white" text
   #424a51 - light grey-blue, used for grid lines
-  #a5a5a5 - medium light grey with transparency,
-  #ffa500 - orange with transparency
+  #a5a5a5 - medium light grey (with transparency)
+  #ffa500 - orange (with transparency)
 */
 
 
@@ -461,7 +461,17 @@ Rectangle{
         height: 21
         radius: 4
 
-        Text{text:"settings"; color:"white"}
+//        Text{text:"settings"; color:"white"}
+        Image{
+            /*
+            This Icon, "settings", is a derivative of "https://www.iconfinder.com/icons/111048/settings_tools_icon" by WPZOOM, used under CC BY-SA 3.0. "settings" is licensed under CC BY-SA 3.0 by Henry Thasler.
+            see: http://creativecommons.org/licenses/by-sa/3.0/
+            */
+            source: "qrc:/svg/settings.svg"
+            anchors.centerIn: parent
+            sourceSize.height: 18
+            sourceSize.width:height
+        }
 
         MouseArea{
             id: settingsdrawerMouseArea

@@ -14,12 +14,17 @@ Item {
         Rectangle{
             id: highlight
             anchors.fill: parent
-            color:"#77ffffff"
+            radius: 3
+            gradient: Gradient {
+                GradientStop { position: 0.0; color: "#ffffff" }
+                GradientStop { position: 1.0; color: "#00000000" }
+            }
             visible: mouse.containsMouse
         }
 
         radius: 3
         border.color: "lightgrey"
+        border.width: 1
         Text{text: root.label; anchors.centerIn: parent}
         MouseArea {
             id: mouse

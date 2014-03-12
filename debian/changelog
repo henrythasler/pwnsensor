@@ -1,3 +1,12 @@
+pwnsensor (0.1-1ubuntu15) saucy; urgency=low
+
+  * finished tutorial
+  * settings drawer: added version info
+  * Bugfix: too many vertices allocated/not used in grid drawing routine
+  * added settings icon (based on http://www.wpzoom.com developer icon set)
+
+ -- Henry Thasler <henry@thasler.de>  Wed, 12 Mar 2014 20:57:48 +0100
+
 pwnsensor (0.1-1ubuntu14) saucy; urgency=low
 
   * color picker: design and functionality improved

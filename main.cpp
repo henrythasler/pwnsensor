@@ -18,6 +18,7 @@ int main(int argc, char *argv[])
 
     QtQuick2ApplicationViewer viewer;
     viewer.rootContext()->setContextProperty("settings", &settings);
+    viewer.rootContext()->setContextProperty("VERSION", VER);
     viewer.rootContext()->setContextProperty("mainwindow",&viewer);
     qDebug() << viewer.engine()->importPathList();
 
@@ -29,7 +30,7 @@ int main(int argc, char *argv[])
 //    format.setStereo(true);
     viewer.setFormat(format);
 
-    viewer.setTitle("pwnsensor beta-1");
+    viewer.setTitle("pwnsensor");
     viewer.setMainQmlFile(QStringLiteral("qml/pwnsensor/main.qml"));
     viewer.showExpanded();
 

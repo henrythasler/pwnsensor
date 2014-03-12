@@ -2,5 +2,6 @@
     <qresource prefix="/svg">
         <file>dropDownTriangle.svg</file>
         <file>pwnsensor80.png</file>
+        <file>settings.svg</file>
     </qresource>
 </RCC>

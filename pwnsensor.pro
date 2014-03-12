@@ -41,6 +41,8 @@ OTHER_FILES += \
 RESOURCES += \
     gfx.qrc
 
+VERSION = $$system(head -1 $${PWD}/debian/changelog | awk \'{print $2}\')
+DEFINES += VER=\\\"\"$${VERSION}\"\\\"
 
 #    for(FILE, OTHER_FILES){
 #        QMAKE_POST_LINK += $$quote(cp -n $${PWD}/$${FILE} $${OUT_PWD}$$escape_expand(\\n\\t))

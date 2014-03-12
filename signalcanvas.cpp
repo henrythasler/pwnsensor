@@ -104,11 +104,8 @@ void GridNode::updateGeometry(const QRectF &bounds)
     int nx=16;
     int ny=12;
 
-    m_geometry->allocate((nx+1)*(ny+1)*2);
+    m_geometry->allocate((nx+1)*2 + (ny+1)*2);
     QSGGeometry::Point2D *vertices = m_geometry->vertexDataAsPoint2D();
-
-//    qDebug() << bounds;
-
 
     for(int x=0; x<=nx;x++)
         {
@@ -121,6 +118,7 @@ void GridNode::updateGeometry(const QRectF &bounds)
         vertices[cnt++].set(int(bounds.topRight().x())+0.5, int(bounds.topRight().y()+(bounds.height()-1)/ny*y)+0.5);
         vertices[cnt++].set(int(bounds.topLeft().x())+0.5, int(bounds.topLeft().y()+(bounds.height()-1)/ny*y)+0.5);
         }
+
     markDirty(QSGNode::DirtyGeometry);
 }
 
