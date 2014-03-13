@@ -58,7 +58,7 @@ Rectangle{
         settings.beginGroup("SensorItems");
         for(var x=0;x<chart.sensors.items.length;x++)
             {
-            settings.beginGroup(chart.sensors.items[x].adapter+"_"+chart.sensors.items[x].label);
+            settings.beginGroup(chart.sensors.items[x].chipname+"_"+chart.sensors.items[x].adapter+"_"+chart.sensors.items[x].label);
                 settings.setValue("checked", chart.sensors.items[x].checked);
                 settings.setValue("color", chart.sensors.items[x].color);
                 settings.setValue("width", chart.sensors.items[x].width);
@@ -204,9 +204,11 @@ Rectangle{
 
                 for(var x=0;x<chart.sensors.items.length;x++)
                     {
-                    if(keys.indexOf(chart.sensors.items[x].adapter+"_"+chart.sensors.items[x].label)>=0)
+                    var name = chart.sensors.items[x].chipname+"_"+chart.sensors.items[x].adapter+"_"+chart.sensors.items[x].label;
+//                    console.log(name);
+                    if(keys.indexOf(name)>=0)
                         {
-                        settings.beginGroup(chart.sensors.items[x].adapter+"_"+chart.sensors.items[x].label);
+                        settings.beginGroup(name);
                             chart.sensors.items[x].checked = (settings.value("checked","false") == "true")?true:false;
                             chart.sensors.items[x].color = settings.value("color","white");
                             chart.sensors.items[x].width = settings.value("width",2);

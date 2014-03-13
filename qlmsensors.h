@@ -45,6 +45,8 @@ class QSensorItem : public QObject
     Q_OBJECT
     Q_PROPERTY(QString label READ getlabel)
     Q_PROPERTY(QString adapter READ getadapter)
+    Q_PROPERTY(QString chipname READ getchipname CONSTANT)
+    Q_PROPERTY(int chipid READ getchipid CONSTANT)
     Q_PROPERTY(QString unit READ getunit)
     Q_PROPERTY(float value READ currentsample NOTIFY currentsampleChanged)
     Q_PROPERTY(float minval READ getminval)
@@ -68,6 +70,8 @@ public:
 
     QString getlabel(){return label;};
     QString getadapter(){return adapter;};
+    QString getchipname(){return chipname;};
+    int getchipid(){return chipid;};
     QString getunit(){return unit;};
     qint64 gettmin(){return tmin;};
     void settmin(const qint64 &val){tmin=val; emit tminChanged();}
@@ -107,6 +111,8 @@ public:
     float minval, maxval;   // min/max values of the signal
     QString label;
     QString adapter;
+    int chipid;
+    QString chipname;
     QString color;
     QString unit;
     float linewidth;

@@ -79,8 +79,8 @@ else
 
     while ((chip = sensors_get_detected_chips(NULL, &chip_nr)))
         {
-        if (sensors_snprintf_chip_name(buf, BUF_SIZE, chip) >= 0)
-//                qDebug() << buf;
+        if (sensors_snprintf_chip_name(buf, BUF_SIZE, chip) < 0)
+            sprintf(buf,"%i",chip_nr);
 
         adap = sensors_get_adapter_name(&chip->bus);
 //            if(adap) qDebug() << " " << adap;
@@ -97,6 +97,8 @@ else
             new_item->label = sensors_get_label(chip, feature);
             if(adap) new_item->adapter = adap;
             new_item->chip = chip;
+            new_item->chipid = chip_nr;
+            new_item->chipname = buf;
             new_item->feature = feature;
             new_item->sub = sub;
             new_item->max_samples = 10000;
@@ -176,6 +178,8 @@ QSensorItem::QSensorItem(QObject *parent) :
     maxval = 0;
     label = "none";
     adapter = "none";
+    chipid = 0;
+    chipname = "none";
     color = "white";
     unit = "";
     linewidth = 2.;

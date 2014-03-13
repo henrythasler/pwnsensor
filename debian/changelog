@@ -1,3 +1,9 @@
+pwnsensor (0.1-1ubuntu16) saucy; urgency=low
+
+  * fix: adapter name was not unique when reading/writing settings; added chipname 
+
+ -- Henry Thasler <henry@thasler.de>  Thu, 13 Mar 2014 21:35:02 +0100
+
 pwnsensor (0.1-1ubuntu15) saucy; urgency=low
 
   * finished tutorial

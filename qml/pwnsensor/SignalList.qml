@@ -20,23 +20,18 @@ Rectangle {
     Rectangle {
         id: properties
         x: 100;
-        y: 100;
+        y: sid*20;
         width: 140;
         height: 100
         visible: false
         color: "#bb252b31"
         border.color: "orange"
         border.width: 2
+        property var sid
 
         Column{
-        Text { color:"#eeeeee"; text: '<b>Min</b>: <i>'+((model.get(list.currentIndex)["minval"]==0)?0:(Math.abs(model.get(list.currentIndex)["minval"])<10)?model.get(list.currentIndex)["minval"].toFixed(2):((Math.abs(model.get(list.currentIndex)["minval"])<24)?model.get(list.currentIndex)["minval"].toFixed(1):model.get(list.currentIndex)["minval"].toFixed()))+'</i>'}
-        Text { color:"#eeeeee"; text: '<b>Max</b>: <i>'+((model.get(list.currentIndex)["maxval"]==0)?0:(Math.abs(model.get(list.currentIndex)["maxval"])<10)?model.get(list.currentIndex)["maxval"].toFixed(2):((Math.abs(model.get(list.currentIndex)["maxval"])<24)?model.get(list.currentIndex)["maxval"].toFixed(1):model.get(list.currentIndex)["maxval"].toFixed()))+'</i>'}
-        }
-        Behavior on y {
-            SpringAnimation {
-                spring: 3
-                damping: 0.2
-            }
+        Text { color:"#eeeeee"; text: '<b>Min</b>: <i>'+((model.get(sid)["minval"]==0)?0:(Math.abs(model.get(sid)["minval"])<10)?model.get(sid)["minval"].toFixed(2):((Math.abs(model.get(sid)["minval"])<24)?model.get(sid)["minval"].toFixed(1):model.get(sid)["minval"].toFixed()))+'</i>'}
+        Text { color:"#eeeeee"; text: '<b>Max</b>: <i>'+((model.get(sid)["maxval"]==0)?0:(Math.abs(model.get(sid)["maxval"])<10)?model.get(sid)["maxval"].toFixed(2):((Math.abs(model.get(sid)["maxval"])<24)?model.get(sid)["maxval"].toFixed(1):model.get(sid)["maxval"].toFixed()))+'</i>'}
         }
     }
 
@@ -49,19 +44,18 @@ Rectangle {
 
             MouseArea{
                 anchors.fill: parent
-                acceptedButtons: Qt.LeftButton | Qt.RightButton
+
+//                hoverEnabled: true
+//                onEntered: {
+//                    properties.sid=index;
+//                    properties.visible = true;
+//                }
+//                onExited: properties.visible = false;
+
                 onClicked: {
                     list.currentIndex=index;
                     properties.x = itemcontainer.x + itemcontainer.width-2;
                     properties.y = Math.min(list.currentItem.y,list.height-properties.height);
-                    if (mouse.button == Qt.RightButton)
-                    {
-//                        properties.visible = true;
-                    }
-                    else
-                    {
-
-                    }
                 }
             }
             Row {
@@ -103,7 +97,7 @@ Rectangle {
                                     var colordialog = colorcomponent.createObject(root, {startcol: colorIndicator.current_color, color: "#252b31", x: colorIndicator.x+colorIndicator.width, y: index*itemcontainer.height, width:320, height:200});
                                     colordialog.accepted.connect(function(newColor){
                                         colorIndicator.current_color = newColor;
-                                        sensors.items[index].color=colorIndicator.current_color;
+                                        sensors.items[index].color = String(newColor)+"";
                                         chart.update()
                                         colorpickeropen=false;
                                         colordialog.destroy();
