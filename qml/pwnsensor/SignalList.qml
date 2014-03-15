@@ -44,13 +44,15 @@ Rectangle {
 
             MouseArea{
                 anchors.fill: parent
-
 //                hoverEnabled: true
+//                cursorShape: Qt.BusyCursor
+
 //                onEntered: {
+//                    console.log("triggered")
 //                    properties.sid=index;
 //                    properties.visible = true;
 //                }
-//                onExited: properties.visible = false;
+//                onExited: console.log("hidden")//properties.visible = false;
 
                 onClicked: {
                     list.currentIndex=index;

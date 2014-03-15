@@ -1,6 +1,5 @@
 import QtQuick 2.0
 import "Assets"
-//import QtQuick.Controls 1.1
 
 Item {
     id: root

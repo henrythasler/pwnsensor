@@ -30,6 +30,7 @@ function rgbToHsb(rgb){
     return { h: h, s: (C==0)?0.:C/max, b: max };
 }
 
+
 // References
 //  [1] https://github.com/bgrins/TinyColor
 function hsbToColor(hsb) {

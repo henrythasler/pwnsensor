@@ -17,4 +17,5 @@ Package: pwnsensor
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}, qtdeclarative5-qtquick2-plugin, libqt5svg5
 Description: sensor monitoring app
- display and evaluate your computers sensor data
+ A Qt-based app to display and evaluate your computers sensor data using
+ lm-sensors as backend.

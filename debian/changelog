@@ -1,3 +1,16 @@
+pwnsensor (0.1-1ubuntu18) saucy; urgency=low
+
+  * custom svg icon added
+  * cleaned up copyright and references
+
+ -- Henry Thasler <henry@thasler.de>  Sat, 15 Mar 2014 09:32:18 +0100
+
+pwnsensor (0.1-1ubuntu17) saucy; urgency=low
+
+  * clamp cursor label to chart area
+
+ -- Henry Thasler <henry@thasler.de>  Fri, 14 Mar 2014 21:09:37 +0100
+
 pwnsensor (0.1-1ubuntu16) saucy; urgency=low
 
   * fix: adapter name was not unique when reading/writing settings; added chipname 

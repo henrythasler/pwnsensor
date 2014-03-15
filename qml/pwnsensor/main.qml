@@ -1,6 +1,6 @@
 import QtQuick 2.0
-//import QtGraphicalEffects 1.0
 import sensors 1.0
+import "Assets/utils.js" as Utils
 
 /* colorset
   #252b31 - dark grey, used as background
@@ -160,7 +160,7 @@ Rectangle{
            cursorvalue.text = val.toFixed(2) + " " + chart.sensors.items[signals.selected_item].unit;
            var pos = chart.sensors.items[signals.selected_item].map2canvas(Qt.rect(chart_container.x, chart_container.y, chart_container.width, chart_container.height), -ctime, val);
 //           console.log(pos)
-           cursor_crosshair.y=pos.y-cursor_crosshair.height/2
+           cursor_crosshair.y=Utils.clamp(pos.y-cursor_crosshair.height/2,chart_container.y,chart_container.height)
 //           cursor_crosshair.x=pos.x
 
            }
@@ -382,7 +382,7 @@ Rectangle{
             cursorvalue.text = val.toFixed(2) + " " + chart.sensors.items[signals.selected_item].unit;
             var pos = chart.sensors.items[signals.selected_item].map2canvas(Qt.rect(chart_container.x, chart_container.y, chart_container.width, chart_container.height), ctime, val);
  //           console.log(pos)
-            cursor_crosshair.y=pos.y-cursor_crosshair.height/2
+            cursor_crosshair.y=Utils.clamp(pos.y-cursor_crosshair.height/2,chart_container.y,chart_container.height);
 //            cursor_crosshair.x=pos.x
         }
 

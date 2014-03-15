@@ -1,2 +1,2 @@
 debian/pwnsensor.desktop usr/share/applications
-pwnsensor80.png usr/share/pixmaps
+pwnsensor-icon.svg usr/share/pixmaps

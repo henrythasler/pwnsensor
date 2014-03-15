@@ -7,5 +7,5 @@ Exec=/opt/pwnsensor/bin/pwnsensor
 Terminal=false
 Type=Application
 StartupNotify=true
-Icon=pwnsensor80
+Icon=pwnsensor-icon
 Categories=System;Monitor;Qt;
