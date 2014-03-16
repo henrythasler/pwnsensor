@@ -4,8 +4,10 @@ pwnsensor
 A Qt-based app to display and evaluate your computers sensor data using lm-sensors as backend. It's a modern approach using Qt Quick and QML in combination with OpenGL to render high quality graphs.
 
 ###Features
-- intuitive design and user interface
-- OpenGL graphics
+- modern, touch-screen friendly design and user interface
+- OpenGL graphics for optimized performance
+- based on lm-sensors
+
 
 ###How to install on Ubuntu
 ```bash
