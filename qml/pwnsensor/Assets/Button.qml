@@ -2,7 +2,7 @@ import QtQuick 2.0
 
 Item {
     id: root
-    property string label: "Label"
+    property string text: "Label"
     signal clicked
 
     Rectangle{
@@ -25,7 +25,7 @@ Item {
         radius: 3
         border.color: "lightgrey"
         border.width: 1
-        Text{text: root.label; anchors.centerIn: parent}
+        Text{text: root.text; anchors.centerIn: parent}
         MouseArea {
             id: mouse
             anchors.fill: parent

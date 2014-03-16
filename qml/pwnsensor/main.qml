@@ -502,6 +502,7 @@ Rectangle{
     SettingsDlg{
         id:settings_dlg
         sensors: chart.sensors
+        tutorial: tutorial
         storageDB : settings
 //        rate: root.timerinterval
         chart: chart

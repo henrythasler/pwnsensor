@@ -6,7 +6,6 @@ import "utils.js" as Utils
 
 Item {
     id: root;
-
     property real radius: 0
     property real border_width: 0
     property real handle_width: 5
@@ -16,6 +15,7 @@ Item {
     property real maximum: 1
     property real minimum: 1
     property real stepSize: 1
+    default property alias children: holdingpen.data
 
     signal changed(real newval)
 
@@ -27,7 +27,7 @@ Item {
     }
 
     Rectangle {
-        anchors.fill: parent
+        anchors.fill: parent;
         border.color: "#eeeeeeee";
         border.width: root.border_width;
         radius: root.radius;
@@ -38,7 +38,7 @@ Item {
     }
 
     Rectangle {
-        id: handle; smooth: true
+        id: handle;
         x: root.border_width;
         y: root.border_width;
         width: root.handle_width;
@@ -52,7 +52,8 @@ Item {
     }
 
     MouseArea{
-        anchors.fill: parent
+        id: holdingpen;
+        anchors.fill: parent;
         onPressed: dragActive=true;
         onReleased: dragActive=false;
         onPositionChanged: {

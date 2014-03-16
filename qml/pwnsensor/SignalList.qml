@@ -1,5 +1,6 @@
 import QtQuick 2.0
 import "Assets"
+import "Assets/utils.js" as Utils
 
 Rectangle {
     id: root
@@ -17,23 +18,24 @@ Rectangle {
         id: model
     }
 
-    Rectangle {
-        id: properties
-        x: 100;
-        y: sid*20;
-        width: 140;
-        height: 100
-        visible: false
-        color: "#bb252b31"
-        border.color: "orange"
-        border.width: 2
-        property var sid
+//    Rectangle {
+//        id: properties
+//        x: 100;
+//        y: sid*20;
+//        width: 140;
+//        height: 100
+//        visible: false
+//        color: "#bb252b31"
+//        border.color: "orange"
+//        border.width: 2
+//        radius: 8
+//        property var sid:0
 
-        Column{
-        Text { color:"#eeeeee"; text: '<b>Min</b>: <i>'+((model.get(sid)["minval"]==0)?0:(Math.abs(model.get(sid)["minval"])<10)?model.get(sid)["minval"].toFixed(2):((Math.abs(model.get(sid)["minval"])<24)?model.get(sid)["minval"].toFixed(1):model.get(sid)["minval"].toFixed()))+'</i>'}
-        Text { color:"#eeeeee"; text: '<b>Max</b>: <i>'+((model.get(sid)["maxval"]==0)?0:(Math.abs(model.get(sid)["maxval"])<10)?model.get(sid)["maxval"].toFixed(2):((Math.abs(model.get(sid)["maxval"])<24)?model.get(sid)["maxval"].toFixed(1):model.get(sid)["maxval"].toFixed()))+'</i>'}
-        }
-    }
+//        Column{
+//        Text { color:"#eeeeee"; text: '<b>Min</b>: <i>'+((model.get(sid)["minval"]==0)?0:(Math.abs(model.get(sid)["minval"])<10)?model.get(sid)["minval"].toFixed(2):((Math.abs(model.get(sid)["minval"])<24)?model.get(sid)["minval"].toFixed(1):model.get(sid)["minval"].toFixed()))+'</i>'}
+//        Text { color:"#eeeeee"; text: '<b>Max</b>: <i>'+((model.get(sid)["maxval"]==0)?0:(Math.abs(model.get(sid)["maxval"])<10)?model.get(sid)["maxval"].toFixed(2):((Math.abs(model.get(sid)["maxval"])<24)?model.get(sid)["maxval"].toFixed(1):model.get(sid)["maxval"].toFixed()))+'</i>'}
+//        }
+//    }
 
     Component {
         id: delegate
@@ -45,11 +47,11 @@ Rectangle {
             MouseArea{
                 anchors.fill: parent
 //                hoverEnabled: true
-//                cursorShape: Qt.BusyCursor
+////                cursorShape: Qt.BusyCursor
 
 //                onEntered: {
 //                    console.log("triggered")
-//                    properties.sid=index;
+//                    properties.sid=index*1;
 //                    properties.visible = true;
 //                }
 //                onExited: console.log("hidden")//properties.visible = false;
@@ -96,7 +98,7 @@ Rectangle {
                                 {
                                 if(!colorpickeropen){
                                     colorpickeropen=true;
-                                    var colordialog = colorcomponent.createObject(root, {startcol: colorIndicator.current_color, color: "#252b31", x: colorIndicator.x+colorIndicator.width, y: index*itemcontainer.height, width:320, height:200});
+                                    var colordialog = colorcomponent.createObject(root, {startcol: colorIndicator.current_color, color: "#252b31", x: colorIndicator.x+colorIndicator.width, y: Utils.clamp(index*itemcontainer.height,0,root.height-200), width:320, height:200});
                                     colordialog.accepted.connect(function(newColor){
                                         colorIndicator.current_color = newColor;
                                         sensors.items[index].color = String(newColor)+"";

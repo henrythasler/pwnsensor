@@ -36,7 +36,8 @@ OTHER_FILES += \
 #    deployapp.sh \
     qml/pwnsensor/CheckBox.qml \
     qml/pwnsensor/Button.qml \
-    qml/pwnsensor/Assets/utils.js
+    qml/pwnsensor/Assets/utils.js \
+    qml/pwnsensor/Assets/Tooltip.qml
 
 RESOURCES += \
     gfx.qrc

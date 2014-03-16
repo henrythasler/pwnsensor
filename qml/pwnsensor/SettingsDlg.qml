@@ -2,8 +2,10 @@ import QtQuick 2.0
 import "Assets"
 
 Rectangle {
+    id: root
     property var sensors: NULL
     property var chart: NULL
+    property var tutorial
     property var storageDB: NULL
     property var sample_rate: sample_slider.value
     property var refresh_rate: refresh_slider.value
@@ -38,6 +40,19 @@ Rectangle {
                  }
             chart.update();
         }
+//        MouseArea{
+//            anchors.fill: parent
+//            onClicked: {
+//                console.log("clicked")
+//                mouse.accepted = false
+//            }
+//        }
+
+//        Tooltip{
+//            anchors.fill: parent
+//            text: "change the linewidth"
+//        }
+
         Binding { target: linewidth_slider; property: "value"; value: sensors.items[0].width; when: !linewidth_slider.dragActive;}
 //        Component.onCompleted: value = sensors.items[0].width;
     }
@@ -94,6 +109,7 @@ Rectangle {
         onChanged: {
             chart.samplerate = Math.round(newval);
         }
+
         Binding { target: sample_slider; property: "value"; value: chart.samplerate; when: !sample_slider.dragActive;}
 //        Component.onCompleted: value = chart.samplerate;
     }
@@ -113,7 +129,7 @@ Rectangle {
                  count += sensors.items[x].samples.length;
                   buffer += sensors.items[x].max_samples;
                  }
-            numsamples.text = "Buffer: "+(count/buffer*100).toFixed(2)+"%";
+            numsamples.text = "<b>Debug Info</b><br>Buffer: "+(count/buffer*100).toFixed(2)+"%";
             }
     }
 
@@ -124,15 +140,20 @@ Rectangle {
 //        height: 200
 //        anchors.bottom: parent.bottom
         Column{
+            spacing: 12
             Text{
                 width: linewidth_slider.width;
                 color:"#eeeeee";
                 wrapMode: Text.WordWrap
                 text:"<b>About pwnsensor</b><br>Version: " + VERSION + "<br>created by Henry Thasler<br>pwnsensor@thasler.org<br>";
             }
-
-            Text{color:"#eeeeee";text:"Debug Info";font.bold: true}
-            Text{id:numsamples; color:"#eeeeee";text:"Buffer: 0%"}
+            Button{
+                width: linewidth_slider.width;
+                height: 24
+                text: "show tutorial";
+                onClicked: root.tutorial.visible = true
+            }
+            Text{id:numsamples; color:"#eeeeee";text:"<b>Debug Info</b><br>Buffer: 0%"}
         }
     }
 }

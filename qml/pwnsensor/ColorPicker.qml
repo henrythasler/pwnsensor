@@ -85,7 +85,7 @@ Rectangle {
         anchors.right: parent.right
         anchors.margins: 10
         height: 24
-        label: "Ok"
+        text: "Ok"
         onClicked: root.accepted(root.col)
     }
 
@@ -96,7 +96,7 @@ Rectangle {
         anchors.right: parent.right
         anchors.margins: 10
         height: 24
-        label: "Cancel"
+        text: "Cancel"
         onClicked: root.cancel()
     }
 }
